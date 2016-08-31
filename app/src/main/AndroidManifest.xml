@@ -1,0 +1,32 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.mozidev.newskeeper">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+
+        <activity android:name=".presentation.splash.SplashActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".presentation.article_details.ArticleDetailsActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".presentation.articles.ArticlesListActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".presentation.categories.CategoriesListActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".presentation.publisher_details.PublisherDetailsActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".presentation.publishers.PublishersListActivity"
+            android:screenOrientation="portrait"/>
+
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="f79a8ea84abe5eac05e02f4bb65e3a858e395f3b" />
+
+    </application>
+
+</manifest>
