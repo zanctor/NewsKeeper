@@ -1,4 +1,4 @@
-package com.mozidev.newskeeper.domain.common;
+package com.mozidev.newskeeper.domain.common.net;
 
 import com.mozidev.newskeeper.domain.articles.Article;
 import com.mozidev.newskeeper.domain.categories.Category;
@@ -7,13 +7,12 @@ import com.mozidev.newskeeper.domain.publishers.Publisher;
 import java.util.List;
 
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 import rx.Observable;
 
-/**
- * Created by mozi on 31.08.16.
- */
-public interface RestInterface {
+public interface APIDataProvider {
 
     String API_URL = "http://46.101.127.19/v1/";
 
@@ -28,5 +27,11 @@ public interface RestInterface {
 
     @GET("articles/text/{id}")
     Observable<ApiResponse<String>> getArticleText(@Path("id") int id);
+
+    @POST("devices/android")
+    Observable<?> postRegisterDevice(@Query("token") String token);
+
+    @POST("devices/filter-android")
+    Observable<?> postSelectedFilters(@Query("token") String token, @Query("category_ids") List<Integer> categories, @Query("publishers_ids") List<Integer> publishers);
 
 }

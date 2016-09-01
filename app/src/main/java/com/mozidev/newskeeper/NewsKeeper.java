@@ -13,7 +13,7 @@ public class NewsKeeper extends Application {
 
     private static MainComponent component;
 
-    public static MainComponent getComponent(){
+    public static MainComponent getComponent() {
         return component;
     }
 
@@ -24,11 +24,11 @@ public class NewsKeeper extends Application {
         initDagger();
     }
 
-    private void initFabric(){
+    private void initFabric() {
         Fabric.with(this, new Crashlytics());
     }
 
-    private void initDagger(){
+    private void initDagger() {
         component = DaggerMainComponent.builder()
                 .dataModule(new DataModule(this))
                 .build();

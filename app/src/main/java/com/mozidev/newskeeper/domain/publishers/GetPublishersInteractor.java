@@ -16,7 +16,7 @@ public class GetPublishersInteractor extends Interactor<List<Publisher>, Void> {
     private final PublishersDataProvider publishersDataProvider;
 
     @Inject
-    public GetPublishersInteractor(@Named(DomainModule.JOB) Scheduler jobScheduler, @Named(DomainModule.UI) Scheduler uiScheduler, PublishersDataProvider publishersDataProvider) {
+    public GetPublishersInteractor(@Named(DomainModule.IO) Scheduler jobScheduler, @Named(DomainModule.UI) Scheduler uiScheduler, PublishersDataProvider publishersDataProvider) {
         super(jobScheduler, uiScheduler);
         this.publishersDataProvider = publishersDataProvider;
     }

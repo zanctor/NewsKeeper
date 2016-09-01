@@ -8,7 +8,7 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.mozidev.newskeeper.R;
-import com.mozidev.newskeeper.domain.categories.Category;
+import com.mozidev.newskeeper.domain.publishers.Publisher;
 
 import java.util.List;
 
@@ -20,10 +20,10 @@ import butterknife.ButterKnife;
  */
 public class PublishersListAdapter extends RecyclerView.Adapter<PublishersListAdapter.ViewHolder> {
 
-    private List<Category> data;
+    private List<Publisher> data;
     private View.OnClickListener onItemClickListener;
 
-    public PublishersListAdapter(List<Category> data) {
+    public PublishersListAdapter(List<Publisher> data) {
         this.data = data;
     }
 
@@ -33,7 +33,7 @@ public class PublishersListAdapter extends RecyclerView.Adapter<PublishersListAd
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_category, parent, false);
+        View convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_publisher, parent, false);
         return new ViewHolder(convertView);
     }
 
@@ -49,10 +49,10 @@ public class PublishersListAdapter extends RecyclerView.Adapter<PublishersListAd
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.category_title)
-        TextView categoryTitle;
-        @BindView(R.id.category_check)
-        CheckBox categoryCheck;
+        @BindView(R.id.publisher_title)
+        TextView publisherTitle;
+        @BindView(R.id.publisher_check)
+        CheckBox publisherCheck;
 
         public ViewHolder(View view) {
             super(view);
@@ -60,10 +60,10 @@ public class PublishersListAdapter extends RecyclerView.Adapter<PublishersListAd
             itemView.setOnClickListener(onItemClickListener);
         }
 
-        public void bind(Category category){
-            categoryTitle.setText(category.title);
-            categoryCheck.setChecked(category.checked);
-            itemView.setTag(category);
+        public void bind(Publisher publisher) {
+            publisherTitle.setText(publisher.getPublisherName());
+            publisherCheck.setChecked(publisher.isChecked());
+            itemView.setTag(publisher);
         }
     }
 }

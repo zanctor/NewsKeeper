@@ -18,7 +18,7 @@ public class CategoriesPresenter extends BasePresenter<CategoriesListView, Void>
     private final GetCategoriesInteractor getCategoriesInteractor;
 
     @Inject
-    public CategoriesPresenter(GetCategoriesInteractor getCategoriesInteractor){
+    public CategoriesPresenter(GetCategoriesInteractor getCategoriesInteractor) {
         this.getCategoriesInteractor = getCategoriesInteractor;
     }
 

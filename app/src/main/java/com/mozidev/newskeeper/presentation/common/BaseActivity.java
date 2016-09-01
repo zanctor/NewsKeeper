@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NavUtils;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 
@@ -28,27 +29,20 @@ public abstract class BaseActivity extends RxAppCompatActivity {
     @Inject
     protected MainPrefs prefs;
 
-    protected abstract int getLayoutId();
-
-    protected int getMenuXML(){
-        return 0;
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(getLayoutId());
         ButterKnife.bind(this);
         NewsKeeper.getComponent().inject(this);
-    }
-
-    @Override
-    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
+        if (recycler != null) {
+            recycler.setLayoutManager(new LinearLayoutManager(this));
+        }
         getPresenter().setView(this);
+        getPresenter().setRouter(this);
     }
 
-    protected void setToolbar(String title){
+    protected void initToolbar(String title) {
         if (toolbar == null) return;
         toolbar.setTitle(title);
         int menu = getMenuXML();
@@ -84,9 +78,19 @@ public abstract class BaseActivity extends RxAppCompatActivity {
         getPresenter().setRouter(null);
     }
 
-    protected Toolbar.OnMenuItemClickListener getItemMenuListener(){
+    protected Toolbar.OnMenuItemClickListener getItemMenuListener() {
         return null;
     }
 
     protected abstract BasePresenter getPresenter();
+
+    protected String getToolbarTitle() {
+        return null;
+    }
+
+    protected abstract int getLayoutId();
+
+    protected int getMenuXML() {
+        return 0;
+    }
 }

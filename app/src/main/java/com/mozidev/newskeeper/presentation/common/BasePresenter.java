@@ -3,7 +3,7 @@ package com.mozidev.newskeeper.presentation.common;
 /**
  * Created by mozi on 31.08.16.
  */
-public abstract class BasePresenter <View, Router> {
+public abstract class BasePresenter<View, Router> {
     private View view;
     private Router router;
 

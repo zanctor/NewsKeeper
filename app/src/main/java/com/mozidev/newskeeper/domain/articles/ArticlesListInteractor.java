@@ -16,13 +16,13 @@ public class ArticlesListInteractor extends Interactor<List<Article>, Void> {
     private final ArticlesDataProvider articlesDataProvider;
 
     @Inject
-    public ArticlesListInteractor(@Named(DomainModule.JOB) Scheduler jobScheduler, @Named(DomainModule.UI) Scheduler uiScheduler, ArticlesDataProvider articlesDataProvider) {
+    public ArticlesListInteractor(@Named(DomainModule.IO) Scheduler jobScheduler, @Named(DomainModule.UI) Scheduler uiScheduler, ArticlesDataProvider articlesDataProvider) {
         super(jobScheduler, uiScheduler);
         this.articlesDataProvider = articlesDataProvider;
     }
 
     @Override
     protected Observable<List<Article>> buildObservable(Void parameter) {
-        return articlesDataProvider.getArticles(jobScheduler);
+        return articlesDataProvider.getArticles();
     }
 }

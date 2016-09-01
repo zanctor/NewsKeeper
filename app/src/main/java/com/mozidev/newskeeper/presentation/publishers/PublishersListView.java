@@ -11,4 +11,6 @@ public interface PublishersListView {
 
     void setPublishers(List<Publisher> data);
 
+    void showNotificationsDialog();
+
 }

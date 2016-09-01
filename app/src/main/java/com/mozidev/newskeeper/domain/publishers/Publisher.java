@@ -1,12 +1,14 @@
 package com.mozidev.newskeeper.domain.publishers;
 
+import java.io.Serializable;
+
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
 /**
  * Created by mozi on 31.08.16.
  */
-public class Publisher extends RealmObject {
+public class Publisher extends RealmObject implements Serializable {
 
     @PrimaryKey
     int id;

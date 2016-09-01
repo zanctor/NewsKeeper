@@ -10,4 +10,6 @@ public interface PublishersDataProvider {
 
     Observable<Publisher> getPublisher(int id);
 
+    void savePublishers(List<Publisher> data);
+
 }

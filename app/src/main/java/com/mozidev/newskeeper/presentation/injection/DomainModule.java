@@ -1,7 +1,7 @@
 package com.mozidev.newskeeper.presentation.injection;
 
-import com.mozidev.newskeeper.domain.common.RestInterface;
-import com.mozidev.newskeeper.domain.common.RestService;
+import com.mozidev.newskeeper.data.APIDataProviderImpl;
+import com.mozidev.newskeeper.domain.common.net.APIDataProvider;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -21,12 +21,12 @@ import rx.schedulers.Schedulers;
 @Module
 public class DomainModule {
 
-    public static final String JOB = "JOB";
+    public static final String IO = "IO";
     public static final String UI = "UI";
 
     @Provides
     @Singleton
-    @Named(JOB)
+    @Named(IO)
     public Scheduler provideJobScheduler() {
         return Schedulers.io();
     }
@@ -40,19 +40,19 @@ public class DomainModule {
 
     @Singleton
     @Provides
-    public RestInterface provideRestInterface(){
+    public APIDataProvider provideRestInterface() {
         return new Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                .baseUrl(RestInterface.API_URL)
+                .baseUrl(APIDataProvider.API_URL)
                 .build()
-                .create(RestInterface.class);
+                .create(APIDataProvider.class);
     }
 
     @Singleton
     @Provides
-    public RestService provideRest(RestInterface restInterface){
-        return new RestService(restInterface);
+    public APIDataProviderImpl provideRest(APIDataProvider APIDataProvider) {
+        return new APIDataProviderImpl(APIDataProvider);
     }
 
 }

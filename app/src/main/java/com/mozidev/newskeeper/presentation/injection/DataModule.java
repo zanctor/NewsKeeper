@@ -14,6 +14,7 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import io.realm.Realm;
 
 @Module
 public class DataModule {
@@ -26,32 +27,38 @@ public class DataModule {
 
     @Singleton
     @Provides
-    public CategoriesDataProvider getCategoriesDataProvider(){
+    public CategoriesDataProvider getCategoriesDataProvider() {
         return new CategoriesDataProviderImpl();
     }
 
     @Singleton
     @Provides
-    public PublishersDataProvider getPublishersDataProvider(){
+    public PublishersDataProvider getPublishersDataProvider() {
         return new PublishersDataProviderImpl();
     }
 
     @Singleton
     @Provides
-    public Context getContext(){
+    public Context getContext() {
         return context;
     }
 
     @Singleton
     @Provides
-    public ArticlesDataProvider getArticlesDataProvider(){
+    public ArticlesDataProvider getArticlesDataProvider() {
         return new ArticlesDataProviderImpl();
     }
 
     @Singleton
     @Provides
-    public MainPrefs getMainPrefs(Context context){
+    public MainPrefs getMainPrefs(Context context) {
         return MainPrefs.with(context);
+    }
+
+    @Singleton
+    @Provides
+    public Realm getRealm(){
+        return Realm.getDefaultInstance();
     }
 
 }

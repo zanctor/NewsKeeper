@@ -1,5 +1,6 @@
 package com.mozidev.newskeeper.presentation.categories;
 
+import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 
 import com.mozidev.newskeeper.R;
@@ -20,6 +21,12 @@ public class CategoriesListActivity extends BaseActivity implements CategoriesLi
     CategoriesPresenter categoriesPresenter;
 
     private CategoriesListAdapter adapter;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        initToolbar(getToolbarTitle());
+    }
 
     @Override
     protected int getLayoutId() {

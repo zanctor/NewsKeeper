@@ -7,5 +7,7 @@ package com.mozidev.newskeeper.domain.common;
 public interface PrefsConfig {
 
     boolean firstRun = true;
+    boolean showNotifications = true;
+    boolean sentTokenToServer = false;
 
 }

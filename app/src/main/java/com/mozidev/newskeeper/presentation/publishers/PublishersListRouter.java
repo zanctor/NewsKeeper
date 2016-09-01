@@ -7,7 +7,7 @@ import com.mozidev.newskeeper.domain.publishers.Publisher;
  */
 public interface PublishersListRouter {
 
-    void viewPublisher(Publisher publisher);
+    void openPublisher(Publisher publisher);
 
     void openArticles();
 

@@ -60,7 +60,7 @@ public class CategoriesListAdapter extends RecyclerView.Adapter<CategoriesListAd
             itemView.setOnClickListener(onItemClickListener);
         }
 
-        public void bind(Category category){
+        public void bind(Category category) {
             categoryTitle.setText(category.title);
             categoryCheck.setChecked(category.checked);
             itemView.setTag(category);

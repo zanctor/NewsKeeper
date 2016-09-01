@@ -16,7 +16,7 @@ public class GetCategoriesInteractor extends Interactor<List<Category>, Void> {
     private final CategoriesDataProvider categoriesDataProvider;
 
     @Inject
-    public GetCategoriesInteractor(@Named(DomainModule.JOB) Scheduler jobScheduler, @Named(DomainModule.UI) Scheduler uiScheduler, CategoriesDataProvider categoriesDataProvider) {
+    public GetCategoriesInteractor(@Named(DomainModule.IO) Scheduler jobScheduler, @Named(DomainModule.UI) Scheduler uiScheduler, CategoriesDataProvider categoriesDataProvider) {
         super(jobScheduler, uiScheduler);
         this.categoriesDataProvider = categoriesDataProvider;
     }

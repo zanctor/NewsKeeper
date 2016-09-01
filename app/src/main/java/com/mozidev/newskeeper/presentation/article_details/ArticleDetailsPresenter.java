@@ -1,7 +1,7 @@
 package com.mozidev.newskeeper.presentation.article_details;
 
 import com.mozidev.newskeeper.domain.articles.Article;
-import com.mozidev.newskeeper.domain.articles.ArticleInteractor;
+import com.mozidev.newskeeper.domain.articles.ArticleTextInteractor;
 import com.mozidev.newskeeper.presentation.common.BasePresenter;
 
 import javax.inject.Inject;
@@ -11,24 +11,24 @@ import rx.Subscriber;
 /**
  * Created by mozi on 31.08.16.
  */
-public class ArticleDetailsPresenter extends BasePresenter {
+public class ArticleDetailsPresenter extends BasePresenter<ArticleDetailsView, ArticleDetailsRouter> {
 
-    private Integer articleId;
-    private ArticleInteractor articleInteractor;
-
-    public void init(Integer articleId){
-        this.articleId = articleId;
-    }
+    private Article article;
+    private ArticleTextInteractor articleTextInteractor;
 
     @Inject
-    public ArticleDetailsPresenter(ArticleInteractor articleInteractor){
-        this.articleInteractor = articleInteractor;
+    public ArticleDetailsPresenter(ArticleTextInteractor articleTextInteractor) {
+        this.articleTextInteractor = articleTextInteractor;
+    }
+
+    public void init(Article article) {
+        this.article = article;
     }
 
     @Override
     public void onStart() {
-        if (articleId == null) return;
-        articleInteractor.execute(articleId, new Subscriber<Article>() {
+        if (article == null) return;
+        articleTextInteractor.execute(article.getId(), new Subscriber<String>() {
             @Override
             public void onCompleted() {
 
@@ -40,15 +40,15 @@ public class ArticleDetailsPresenter extends BasePresenter {
             }
 
             @Override
-            public void onNext(Article article) {
-
+            public void onNext(String text) {
+                getView().setToolbar(article.getTitle()); //todo
             }
         });
     }
 
     @Override
     public void onStop() {
-        articleInteractor.unsubscribe();
+        articleTextInteractor.unsubscribe();
     }
 
 }

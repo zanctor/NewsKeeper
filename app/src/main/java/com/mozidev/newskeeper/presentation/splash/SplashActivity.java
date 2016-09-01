@@ -3,8 +3,6 @@ package com.mozidev.newskeeper.presentation.splash;
 import android.content.Intent;
 
 import com.mozidev.newskeeper.R;
-import com.mozidev.newskeeper.presentation.articles.ArticlesListActivity;
-import com.mozidev.newskeeper.presentation.categories.CategoriesListActivity;
 import com.mozidev.newskeeper.presentation.common.BaseActivity;
 import com.mozidev.newskeeper.presentation.common.BasePresenter;
 
@@ -29,8 +27,9 @@ public class SplashActivity extends BaseActivity implements SplashRouter {
     }
 
     @Override
-    public void openMainScreen() {
-        startActivity(new Intent(this, prefs.isFirstRun() ? CategoriesListActivity.class : ArticlesListActivity.class));
-        prefs.setFirstRun(false); // TODO
+    public void openMainScreen(Intent intent) {
+        startActivity(intent);
+        finish();
     }
+
 }
