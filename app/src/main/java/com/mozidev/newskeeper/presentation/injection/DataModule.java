@@ -45,8 +45,8 @@ public class DataModule {
 
     @Singleton
     @Provides
-    public ArticlesDataProvider getArticlesDataProvider() {
-        return new ArticlesDataProviderImpl();
+    public ArticlesDataProvider getArticlesDataProvider(Realm realm) {
+        return new ArticlesDataProviderImpl(realm);
     }
 
     @Singleton
@@ -57,7 +57,7 @@ public class DataModule {
 
     @Singleton
     @Provides
-    public Realm getRealm(){
+    public Realm getRealm() {
         return Realm.getDefaultInstance();
     }
 

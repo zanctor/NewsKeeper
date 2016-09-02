@@ -1,5 +1,7 @@
 package com.mozidev.newskeeper.domain.publishers;
 
+import android.support.annotation.Nullable;
+
 import java.io.Serializable;
 
 import io.realm.RealmObject;
@@ -15,12 +17,16 @@ public class Publisher extends RealmObject implements Serializable {
     String publisher_name;
     String description;
     String logo;
+    @Nullable
     String phone;
+    @Nullable
     String email;
+    @Nullable
     String site;
+    @Nullable
     String address;
     boolean is_deleted;
-    boolean checked;
+    boolean checked = true;
 
     public int getId() {
         return id;

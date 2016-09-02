@@ -13,4 +13,10 @@ public interface PublishersListView {
 
     void showNotificationsDialog();
 
+    void checkAll(boolean check);
+
+    void showCheckDialog();
+
+    void showDataDialog();
+
 }

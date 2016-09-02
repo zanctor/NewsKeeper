@@ -13,6 +13,8 @@ import com.mozidev.newskeeper.R;
 import com.mozidev.newskeeper.domain.common.MainPrefs;
 import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
 
+import java.lang.annotation.Annotation;
+
 import javax.inject.Inject;
 
 import butterknife.BindView;
@@ -32,8 +34,7 @@ public abstract class BaseActivity extends RxAppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(getLayoutId());
-        ButterKnife.bind(this);
+        inflateXML();
         NewsKeeper.getComponent().inject(this);
         if (recycler != null) {
             recycler.setLayoutManager(new LinearLayoutManager(this));
@@ -78,6 +79,15 @@ public abstract class BaseActivity extends RxAppCompatActivity {
         getPresenter().setRouter(null);
     }
 
+    private void inflateXML(){
+        Class cls = getClass();
+        if (!cls.isAnnotationPresent(Layout.class)) return;
+        Annotation annotation = cls.getAnnotation(Layout.class);
+        Layout layout = (Layout) annotation;
+        setContentView(layout.id());
+        ButterKnife.bind(this);
+    }
+
     protected Toolbar.OnMenuItemClickListener getItemMenuListener() {
         return null;
     }
@@ -87,8 +97,6 @@ public abstract class BaseActivity extends RxAppCompatActivity {
     protected String getToolbarTitle() {
         return null;
     }
-
-    protected abstract int getLayoutId();
 
     protected int getMenuXML() {
         return 0;

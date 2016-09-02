@@ -1,6 +1,7 @@
 package com.mozidev.newskeeper.presentation.articles;
 
 import com.mozidev.newskeeper.domain.articles.Article;
+import com.mozidev.newskeeper.domain.articles.ArticleTextInteractor;
 import com.mozidev.newskeeper.domain.articles.ArticlesListInteractor;
 import com.mozidev.newskeeper.presentation.common.BasePresenter;
 
@@ -16,10 +17,12 @@ import rx.Subscriber;
 public class ArticlesPresenter extends BasePresenter<ArticlesListView, ArticlesListRouter> {
 
     private final ArticlesListInteractor articlesListInteractor;
+    private final ArticleTextInteractor articleTextInteractor;
 
     @Inject
-    public ArticlesPresenter(ArticlesListInteractor articlesListInteractor) {
+    public ArticlesPresenter(ArticlesListInteractor articlesListInteractor, ArticleTextInteractor articleTextInteractor) {
         this.articlesListInteractor = articlesListInteractor;
+        this.articleTextInteractor = articleTextInteractor;
     }
 
     @Override
@@ -37,7 +40,26 @@ public class ArticlesPresenter extends BasePresenter<ArticlesListView, ArticlesL
     }
 
     public void openArticle(Article article) {
-        getRouter().openArticle(article);
+        if (article.getText() == null) {
+            articleTextInteractor.execute(article.getId(), new Subscriber<Void>() {
+                @Override
+                public void onCompleted() {
+
+                }
+
+                @Override
+                public void onError(Throwable e) {
+
+                }
+
+                @Override
+                public void onNext(Void s) {
+                    getRouter().openArticle(article);
+                }
+            });
+        } else {
+            getRouter().openArticle(article);
+        }
     }
 
     public void openSettings() {

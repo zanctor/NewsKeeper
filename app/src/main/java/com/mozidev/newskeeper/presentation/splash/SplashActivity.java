@@ -5,21 +5,15 @@ import android.content.Intent;
 import com.mozidev.newskeeper.R;
 import com.mozidev.newskeeper.presentation.common.BaseActivity;
 import com.mozidev.newskeeper.presentation.common.BasePresenter;
+import com.mozidev.newskeeper.presentation.common.Layout;
 
 import javax.inject.Inject;
 
-/**
- * Created by mozi on 31.08.16.
- */
+@Layout(id = R.layout.activity_splash)
 public class SplashActivity extends BaseActivity implements SplashRouter {
 
     @Inject
     SplashPresenter splashPresenter;
-
-    @Override
-    protected int getLayoutId() {
-        return R.layout.activity_splash;
-    }
 
     @Override
     protected BasePresenter getPresenter() {

@@ -8,12 +8,11 @@ import com.google.android.gms.common.GoogleApiAvailability;
 import com.mozidev.newskeeper.domain.common.MainPrefs;
 import com.mozidev.newskeeper.domain.common.RefreshDataInteractor;
 import com.mozidev.newskeeper.domain.common.gcm.RegistrationIntentService;
+import com.mozidev.newskeeper.domain.common.util.NetworkUtils;
 import com.mozidev.newskeeper.presentation.articles.ArticlesListActivity;
 import com.mozidev.newskeeper.presentation.categories.CategoriesListActivity;
 import com.mozidev.newskeeper.presentation.common.BaseActivity;
 import com.mozidev.newskeeper.presentation.common.BasePresenter;
-
-import org.greenrobot.eventbus.EventBus;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -27,13 +26,11 @@ import rx.Subscriber;
  */
 public class SplashPresenter extends BasePresenter<Void, SplashRouter> {
 
+    private static final int SPLASH_DELAY = 5000;
+    private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
+    private final RefreshDataInteractor refreshDataInteractor;
     MainPrefs prefs;
     Context context;
-
-    private static final int SPLASH_DELAY = 2500;
-    private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
-
-    private final RefreshDataInteractor refreshDataInteractor;
 
 
     @Inject
@@ -48,30 +45,32 @@ public class SplashPresenter extends BasePresenter<Void, SplashRouter> {
         if (checkPlayServices()) {
             context.startService(new Intent(context, RegistrationIntentService.class));
         }
-        refreshDataInteractor.execute(new Subscriber<Object>() {
-            @Override
-            public void onCompleted() {
+        final Intent intent = new Intent(context, prefs.isFirstRun() ? CategoriesListActivity.class : ArticlesListActivity.class);
+        if (NetworkUtils.isConnected(context)) {
+            refreshDataInteractor.execute(new Subscriber<Object>() {
+                @Override
+                public void onCompleted() {
 
-            }
+                }
 
-            @Override
-            public void onError(Throwable e) {
+                @Override
+                public void onError(Throwable e) {
 
-            }
+                }
 
-            @Override
-            public void onNext(Object obj) {
-                EventBus.getDefault()
-                        .post(new Object()); //todo
-            }
-        });
-        new Timer().schedule(new TimerTask() {
-            @Override
-            public void run() {
-                Intent intent = new Intent(context, prefs.isFirstRun() ? CategoriesListActivity.class : ArticlesListActivity.class);
-                getRouter().openMainScreen(intent);
-            }
-        }, SPLASH_DELAY);
+                @Override
+                public void onNext(Object obj) {
+                    getRouter().openMainScreen(intent);
+                }
+            });
+        } else {
+            new Timer().schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    getRouter().openMainScreen(intent);
+                }
+            }, SPLASH_DELAY);
+        }
     }
 
     @Override

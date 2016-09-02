@@ -11,4 +11,8 @@ public interface CategoriesListView {
 
     void setCategories(List<Category> data);
 
+    void checkAll(boolean check);
+
+    void showCheckDialog();
+
 }

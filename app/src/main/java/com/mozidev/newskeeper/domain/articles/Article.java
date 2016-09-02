@@ -83,7 +83,7 @@ public class Article extends RealmObject implements Serializable {
     }
 
     public int getCategoryId() {
-        return category.id;
+        return category.getId();
     }
 
     public String getLink() {

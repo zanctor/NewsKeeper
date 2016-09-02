@@ -47,10 +47,19 @@ public class PublishersListAdapter extends RecyclerView.Adapter<PublishersListAd
         return data == null ? 0 : data.size();
     }
 
+    public void checkAll(boolean check) {
+        if (data != null) {
+            for (Publisher publisher : data) {
+                publisher.setChecked(check);
+            }
+        }
+        notifyDataSetChanged();
+    }
+
     class ViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.publisher_title)
-        TextView publisherTitle;
+        @BindView(R.id.publisher_name)
+        TextView publisherName;
         @BindView(R.id.publisher_check)
         CheckBox publisherCheck;
 
@@ -61,7 +70,7 @@ public class PublishersListAdapter extends RecyclerView.Adapter<PublishersListAd
         }
 
         public void bind(Publisher publisher) {
-            publisherTitle.setText(publisher.getPublisherName());
+            publisherName.setText(publisher.getPublisherName());
             publisherCheck.setChecked(publisher.isChecked());
             itemView.setTag(publisher);
         }

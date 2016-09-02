@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="big_margin">16dp</dimen>
     <dimen name="usual_margin">8dp</dimen>
     <dimen name="small_margin">4dp</dimen>
+    <dimen name="button_publishers_height">48dp</dimen>
+    <dimen name="item_list_height">96dp</dimen>
+    <dimen name="image_card_height">216dp</dimen>
 </resources>

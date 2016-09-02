@@ -47,6 +47,15 @@ public class CategoriesListAdapter extends RecyclerView.Adapter<CategoriesListAd
         return data == null ? 0 : data.size();
     }
 
+    public void checkAll(boolean check) {
+        if (data != null) {
+            for (Category category : data) {
+                category.setChecked(check);
+            }
+        }
+        notifyDataSetChanged();
+    }
+
     class ViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.category_title)
@@ -61,8 +70,8 @@ public class CategoriesListAdapter extends RecyclerView.Adapter<CategoriesListAd
         }
 
         public void bind(Category category) {
-            categoryTitle.setText(category.title);
-            categoryCheck.setChecked(category.checked);
+            categoryTitle.setText(category.getTitle());
+            categoryCheck.setChecked(category.isChecked());
             itemView.setTag(category);
         }
     }

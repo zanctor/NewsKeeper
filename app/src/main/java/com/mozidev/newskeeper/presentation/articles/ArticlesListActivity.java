@@ -11,21 +11,19 @@ import com.mozidev.newskeeper.presentation.article_details.ArticleDetailsActivit
 import com.mozidev.newskeeper.presentation.categories.CategoriesListActivity;
 import com.mozidev.newskeeper.presentation.common.BaseActivity;
 import com.mozidev.newskeeper.presentation.common.BasePresenter;
+import com.mozidev.newskeeper.presentation.common.Layout;
+import com.mozidev.newskeeper.presentation.publishers.PublishersListActivity;
 import com.mozidev.newskeeper.presentation.settings.SettingsActivity;
 
 import java.util.List;
 
 import javax.inject.Inject;
 
+@Layout(id = R.layout.activity_articles_list)
 public class ArticlesListActivity extends BaseActivity implements ArticlesListRouter, ArticlesListView {
 
     @Inject
     ArticlesPresenter articlesPresenter;
-
-    @Override
-    protected int getLayoutId() {
-        return R.layout.activity_articles_list;
-    }
 
     @Override
     protected int getMenuXML() {
@@ -36,6 +34,10 @@ public class ArticlesListActivity extends BaseActivity implements ArticlesListRo
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initToolbar(getToolbarTitle());
+        toolbar.setNavigationOnClickListener(v -> {
+            startActivity(new Intent(this, PublishersListActivity.class));
+            finish();
+        });
     }
 
     @Override

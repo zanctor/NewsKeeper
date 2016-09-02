@@ -10,18 +10,34 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".presentation.splash.SplashActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".presentation.article_details.ArticleDetailsActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".presentation.articles.ArticlesListActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".presentation.categories.CategoriesListActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".presentation.publisher_details.PublisherDetailsActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".presentation.publishers.PublishersListActivity"
-            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".presentation.splash.SplashActivity"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".presentation.article_details.ArticleDetailsActivity"
+            android:parentActivityName=".presentation.articles.ArticlesListActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".presentation.articles.ArticlesListActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".presentation.categories.CategoriesListActivity"
+            android:parentActivityName=".presentation.articles.ArticlesListActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".presentation.publisher_details.PublisherDetailsActivity"
+            android:parentActivityName=".presentation.publishers.PublishersListActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".presentation.publishers.PublishersListActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" />
 
         <meta-data
             android:name="io.fabric.ApiKey"
@@ -30,7 +46,7 @@
         <receiver
             android:name="com.google.android.gms.gcm.GcmReceiver"
             android:exported="true"
-            android:permission="com.google.android.c2dm.permission.SEND" >
+            android:permission="com.google.android.c2dm.permission.SEND">
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
                 <category android:name="com.mozidev.newskeeper" />
@@ -41,7 +57,7 @@
         <!-- [START gcm_listener] -->
         <service
             android:name=".domain.common.gcm.GCMListenerService"
-            android:exported="false" >
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
             </intent-filter>
@@ -52,14 +68,13 @@
             android:name=".domain.common.gcm.AppInstanceIDListenerService"
             android:exported="false">
             <intent-filter>
-                <action android:name="com.google.android.gms.iid.InstanceID"/>
+                <action android:name="com.google.android.gms.iid.InstanceID" />
             </intent-filter>
         </service>
         <!-- [END instanceId_listener] -->
         <service
             android:name=".domain.common.gcm.RegistrationIntentService"
-            android:exported="false">
-        </service>
+            android:exported="false"></service>
 
     </application>
 

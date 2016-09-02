@@ -7,33 +7,29 @@ import com.mozidev.newskeeper.R;
 import com.mozidev.newskeeper.domain.articles.Article;
 import com.mozidev.newskeeper.presentation.common.BaseActivity;
 import com.mozidev.newskeeper.presentation.common.BasePresenter;
+import com.mozidev.newskeeper.presentation.common.Layout;
 
 import javax.inject.Inject;
 
-/**
- * Created by mozi on 31.08.16.
- */
+@Layout(id = R.layout.activity_article_details)
 public class ArticleDetailsActivity extends BaseActivity implements ArticleDetailsView {
-
-    private Article article;
 
     @Inject
     ArticleDetailsPresenter articleDetailsPresenter;
+    private Article article;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         article = (Article) getIntent().getSerializableExtra(Constants.EXTRA_ARTICLE);
+        if (article != null) {
+            articleDetailsPresenter.init(article);
+        }
     }
 
     @Override
     protected BasePresenter getPresenter() {
         return articleDetailsPresenter;
-    }
-
-    @Override
-    protected int getLayoutId() {
-        return R.layout.activity_article_details;
     }
 
     @Override

@@ -5,19 +5,18 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.SwitchCompat;
 import android.widget.Button;
-import android.widget.CompoundButton;
+import android.widget.ImageButton;
 
 import com.mozidev.newskeeper.R;
 import com.mozidev.newskeeper.presentation.common.BaseActivity;
 import com.mozidev.newskeeper.presentation.common.BasePresenter;
+import com.mozidev.newskeeper.presentation.common.Layout;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 
-/**
- * Created by mozi on 01.09.16.
- */
+@Layout(id = R.layout.activity_settings)
 public class SettingsActivity extends BaseActivity implements SettingsView, SettingsRouter {
 
     @Inject
@@ -27,17 +26,15 @@ public class SettingsActivity extends BaseActivity implements SettingsView, Sett
     SwitchCompat notificationsSwitch;
     @BindView(R.id.button_clear)
     Button clearButton;
+    @BindView(R.id.button_google_play)
+    ImageButton googlePlayButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         clearButton.setOnClickListener(v -> settingsPresenter.showClearDialog());
         notificationsSwitch.setOnCheckedChangeListener((compoundButton, b) -> settingsPresenter.setNotfications(b));
-    }
-
-    @Override
-    protected int getLayoutId() {
-        return R.layout.activity_settings;
+        googlePlayButton.setOnClickListener(v -> settingsPresenter.openPlayStore());
     }
 
     @Override
@@ -54,12 +51,11 @@ public class SettingsActivity extends BaseActivity implements SettingsView, Sett
     public void showClearMemoryDialog() {
         new AlertDialog.Builder(this)
                 .setMessage("Are you sure to clear cached memory?")
-                .setNeutralButton(android.R.string.cancel, ((dialogInterface, i) -> {}))
+                .setNeutralButton(android.R.string.cancel, ((dialogInterface, i) -> {
+                }))
                 .setPositiveButton(android.R.string.yes, ((dialogInterface, i) -> settingsPresenter.clearMemory()))
                 .create()
                 .show();
-
-
     }
 
     @Override

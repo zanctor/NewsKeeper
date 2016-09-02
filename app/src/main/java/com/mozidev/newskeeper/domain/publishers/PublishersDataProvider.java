@@ -8,8 +8,6 @@ public interface PublishersDataProvider {
 
     Observable<List<Publisher>> getPublishers();
 
-    Observable<Publisher> getPublisher(int id);
-
     void savePublishers(List<Publisher> data);
 
 }

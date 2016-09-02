@@ -9,9 +9,7 @@ public interface ArticlesDataProvider {
 
     Observable<List<Article>> getArticles();
 
-    Observable<Article> getArticle(int id);
-
-    void saveArticles(List<Article> data);
+    void refreshArticles(List<Article> data);
 
     void cleanArticles(Scheduler ioScheduler);
 }

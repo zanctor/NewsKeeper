@@ -16,9 +16,8 @@ import rx.Scheduler;
  */
 public class ArticlesDataProviderImpl implements ArticlesDataProvider {
 
-    Realm realm;
-
     private static final long TWO_WEEKS_INTERVAL = 1209600000;
+    Realm realm;
 
     @Inject
     public ArticlesDataProviderImpl(Realm realm) {
@@ -28,23 +27,15 @@ public class ArticlesDataProviderImpl implements ArticlesDataProvider {
     @Override
     public Observable<List<Article>> getArticles() {
         return realm.asObservable()
-                    .map(it -> it.where(Article.class)
-                            .equalTo("status", true)
-                            .not()
-                            .equalTo("is_deleted", true)
-                            .findAll());
+                .map(it -> it.where(Article.class)
+                        .equalTo("status", true)
+                        .not()
+                        .equalTo("is_deleted", true)
+                        .findAll());
     }
 
     @Override
-    public Observable<Article> getArticle(int id) {
-        return realm.asObservable()
-                    .map(it -> it.where(Article.class)
-                            .equalTo("id", id)
-                            .findFirst());
-    }
-
-    @Override
-    public void saveArticles(List<Article> data) {
+    public void refreshArticles(List<Article> data) {
         realm.copyToRealmOrUpdate(data);
     }
 

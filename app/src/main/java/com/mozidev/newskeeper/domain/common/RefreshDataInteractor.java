@@ -22,24 +22,26 @@ public class RefreshDataInteractor extends Interactor<Object, Void> {
     Realm realm;
 
     @Inject
-    public RefreshDataInteractor(@Named(DomainModule.IO) Scheduler jobScheduler, @Named(DomainModule.UI) Scheduler uiScheduler, APIDataProviderImpl provider) {
+    public RefreshDataInteractor(@Named(DomainModule.IO) Scheduler jobScheduler, @Named(DomainModule.UI) Scheduler uiScheduler, APIDataProviderImpl provider, Realm realm) {
         super(jobScheduler, uiScheduler);
         this.provider = provider;
+        this.realm = realm;
     }
 
     @Override
     protected Observable<Object> buildObservable(Void parameter) {
         return provider.getPublishers()
-                .map(it -> {
-                    realm = Realm.getDefaultInstance();
+                .flatMap(it -> {
                     saveData(it);
-                    provider.getCategories()
-                            .subscribe(data -> {
-                                saveData(data);
-                                provider.getArticles()
-                                        .subscribe(this::saveData);
-                            });
-                    return it;
+                    return provider.getCategories();
+                })
+                .flatMap(it -> {
+                    saveData(it);
+                    return provider.getArticles();
+                })
+                .flatMap(it -> {
+                    saveData(it);
+                    return Observable.empty();
                 });
     }
 
