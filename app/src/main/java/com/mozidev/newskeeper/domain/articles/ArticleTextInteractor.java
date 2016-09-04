@@ -11,7 +11,7 @@ import io.realm.Realm;
 import rx.Observable;
 import rx.Scheduler;
 
-public class ArticleTextInteractor extends Interactor<Void, Integer> {
+public class ArticleTextInteractor extends Interactor<Void, Article> {
 
     private final APIDataProviderImpl provider;
     private Realm realm;
@@ -24,18 +24,18 @@ public class ArticleTextInteractor extends Interactor<Void, Integer> {
     }
 
     @Override
-    protected Observable<Void> buildObservable(Integer parameter) {
-        provider.getArticleText(parameter)
-                .subscribe(it -> {
-                    realm.beginTransaction();
-                    Article article = realm.where(Article.class)
-                            .equalTo("id", parameter)
-                            .findFirst();
-                    article.setText(it);
-                    realm.copyToRealmOrUpdate(article);
-                    realm.commitTransaction();
-                });
+    protected Observable<Void> buildObservable(Article parameter) {
+        return realm.asObservable()
+                .map(it -> {
+                    provider.getArticleText(parameter.getId())
+                            .doOnNext(s -> {
+                                realm.beginTransaction();
+                                parameter.setText(s);
+                                realm.copyToRealmOrUpdate(parameter);
+                                realm.commitTransaction();
+                            });
 
-        return Observable.empty();
+                    return null;
+                });
     }
 }

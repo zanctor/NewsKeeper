@@ -15,9 +15,6 @@ import javax.inject.Inject;
 
 import rx.Subscriber;
 
-/**
- * Created by mozi on 31.08.16.
- */
 public class PublishersPresenter extends BasePresenter<PublishersListView, PublishersListRouter> {
 
     private final GetPublishersInteractor getPublishersInteractor;

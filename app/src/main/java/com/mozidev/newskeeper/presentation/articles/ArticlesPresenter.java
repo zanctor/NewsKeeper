@@ -41,7 +41,7 @@ public class ArticlesPresenter extends BasePresenter<ArticlesListView, ArticlesL
 
     public void openArticle(Article article) {
         if (article.getText() == null) {
-            articleTextInteractor.execute(article.getId(), new Subscriber<Void>() {
+            articleTextInteractor.execute(article, new Subscriber<Void>() {
                 @Override
                 public void onCompleted() {
 

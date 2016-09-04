@@ -12,4 +12,5 @@
     <string name="view_articles">View articles</string>
     <string name="clear_memory">Clear memory</string>
     <string name="data_warning">The app is launched without Internet. Any data will not be loaded.</string>
+    <string name="share">Share</string>
 </resources>

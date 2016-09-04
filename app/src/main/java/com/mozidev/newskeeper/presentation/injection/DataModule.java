@@ -33,8 +33,8 @@ public class DataModule {
 
     @Singleton
     @Provides
-    public PublishersDataProvider getPublishersDataProvider() {
-        return new PublishersDataProviderImpl();
+    public PublishersDataProvider getPublishersDataProvider(Realm realm) {
+        return new PublishersDataProviderImpl(realm);
     }
 
     @Singleton
