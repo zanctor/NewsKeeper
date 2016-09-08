@@ -2,6 +2,7 @@ package com.mozidev.newskeeper.domain.publishers;
 
 import com.mozidev.newskeeper.domain.common.Interactor;
 import com.mozidev.newskeeper.presentation.injection.DomainModule;
+import com.mozidev.newskeeper.presentation.publishers.PublisherViewModel;
 
 import java.util.List;
 
@@ -14,7 +15,7 @@ import rx.Scheduler;
 /**
  * Created by mozi on 02.09.16.
  */
-public class SavePublishersInteractor extends Interactor<Void, List<Publisher>> {
+public class SavePublishersInteractor extends Interactor<Void, List<PublisherViewModel>> {
 
     PublishersDataProvider provider;
 
@@ -25,7 +26,7 @@ public class SavePublishersInteractor extends Interactor<Void, List<Publisher>> 
     }
 
     @Override
-    protected Observable<Void> buildObservable(List<Publisher> parameter) {
+    protected Observable<Void> buildObservable(List<PublisherViewModel> parameter) {
         provider.savePublishers(parameter);
 
         return Observable.empty();

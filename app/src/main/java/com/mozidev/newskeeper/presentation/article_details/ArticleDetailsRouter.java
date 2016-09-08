@@ -2,8 +2,6 @@ package com.mozidev.newskeeper.presentation.article_details;
 
 import android.content.Intent;
 
-import com.mozidev.newskeeper.domain.articles.Article;
-
 /**
  * Created by mozi on 31.08.16.
  */

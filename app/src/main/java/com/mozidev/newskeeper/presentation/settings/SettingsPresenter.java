@@ -8,7 +8,11 @@ import com.mozidev.newskeeper.domain.common.MainPrefs;
 import com.mozidev.newskeeper.presentation.common.BasePresenter;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
+import rx.Subscriber;
+
+@Singleton
 public class SettingsPresenter extends BasePresenter<SettingsView, SettingsRouter> {
 
     MainPrefs prefs;
@@ -31,7 +35,22 @@ public class SettingsPresenter extends BasePresenter<SettingsView, SettingsRoute
     }
 
     public void clearMemory() {
-        interactor.execute(null);
+        interactor.execute(null, new Subscriber<Void>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onNext(Void aVoid) {
+
+            }
+        });
     }
 
     public void setNotfications(boolean b) {

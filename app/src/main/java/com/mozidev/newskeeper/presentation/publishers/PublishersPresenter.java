@@ -3,6 +3,7 @@ package com.mozidev.newskeeper.presentation.publishers;
 import android.content.Context;
 
 import com.mozidev.newskeeper.domain.common.MainPrefs;
+import com.mozidev.newskeeper.domain.common.SaveFiltersInteractor;
 import com.mozidev.newskeeper.domain.common.util.NetworkUtils;
 import com.mozidev.newskeeper.domain.publishers.GetPublishersInteractor;
 import com.mozidev.newskeeper.domain.publishers.Publisher;
@@ -12,21 +13,26 @@ import com.mozidev.newskeeper.presentation.common.BasePresenter;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import rx.Subscriber;
 
+@Singleton
 public class PublishersPresenter extends BasePresenter<PublishersListView, PublishersListRouter> {
+
+    MainPrefs prefs;
+    List<PublisherViewModel> data;
+    Context context;
 
     private final GetPublishersInteractor getPublishersInteractor;
     private final SavePublishersInteractor savePublishersInteractor;
-    MainPrefs prefs;
-    List<Publisher> data;
-    Context context;
+    private final SaveFiltersInteractor saveFiltersInteractor;
 
     @Inject
-    public PublishersPresenter(GetPublishersInteractor getPublishersInteractor, SavePublishersInteractor savePublishersInteractor, MainPrefs prefs, Context context) {
+    public PublishersPresenter(GetPublishersInteractor getPublishersInteractor, SavePublishersInteractor savePublishersInteractor, SaveFiltersInteractor saveFiltersInteractor, MainPrefs prefs, Context context) {
         this.getPublishersInteractor = getPublishersInteractor;
         this.savePublishersInteractor = savePublishersInteractor;
+        this.saveFiltersInteractor = saveFiltersInteractor;
         this.prefs = prefs;
         this.context = context;
     }
@@ -52,8 +58,8 @@ public class PublishersPresenter extends BasePresenter<PublishersListView, Publi
 
             @Override
             public void onNext(List<Publisher> publishers) {
-                data = publishers;
-                getView().setPublishers(publishers);
+                data = PublisherViewModel.create(publishers);
+                getView().setPublishers(data);
             }
         });
     }
@@ -61,14 +67,15 @@ public class PublishersPresenter extends BasePresenter<PublishersListView, Publi
     @Override
     public void onStop() {
         getPublishersInteractor.unsubscribe();
+        savePublishersInteractor.unsubscribe();
     }
 
-    public void openPublisher(Publisher publisher) {
+    void openPublisher(PublisherViewModel publisher) {
         getRouter().openPublisher(publisher);
     }
 
-    public boolean isAtLeastOneSelected() {
-        for (Publisher publisher : data) {
+    boolean isAtLeastOneSelected() {
+        for (PublisherViewModel publisher : data) {
             if (publisher.isChecked()) {
                 return true;
             }
@@ -76,33 +83,60 @@ public class PublishersPresenter extends BasePresenter<PublishersListView, Publi
         return false;
     }
 
-    public void selectUnselect() {
-        for (Publisher publisher : data) {
+    void selectUnselect() {
+        for (PublisherViewModel publisher : data) {
             if (publisher.isChecked()) {
-                getView().checkAll(true);
+                getView().checkAll(false);
                 return;
             }
         }
-        getView().checkAll(false);
+        getView().checkAll(true);
     }
 
-    public void checkAndGo() {
-        if (isAtLeastOneSelected()) {
-            saveData();
+    void checkAndGo() {
+        if (data != null) {
+            if (isAtLeastOneSelected()) {
+                saveData();
+            } else {
+                showCheckDialog();
+            }
         } else {
-            showCheckDialog();
+            openAricles();
         }
     }
 
-    public void showCheckDialog() {
+    private void showCheckDialog() {
         getView().showCheckDialog();
     }
 
-    public void saveData() {
+    void openAricles(){
+        getRouter().openArticles();
+    }
+
+    private void saveData() {
         savePublishersInteractor.execute(data, new Subscriber<Void>() {
             @Override
             public void onCompleted() {
+                if (NetworkUtils.isConnected(context)) {
+                    saveFiltersInteractor.execute(new Subscriber<Object>() {
 
+                        @Override
+                        public void onNext(Object o) {
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+
+                        }
+
+                        @Override
+                        public void onCompleted() {
+
+                        }
+                    });
+                }
+                openAricles();
             }
 
             @Override
@@ -112,7 +146,7 @@ public class PublishersPresenter extends BasePresenter<PublishersListView, Publi
 
             @Override
             public void onNext(Void aVoid) {
-                getRouter().openArticles();
+
             }
         });
     }

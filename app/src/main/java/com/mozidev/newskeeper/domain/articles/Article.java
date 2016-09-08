@@ -13,6 +13,7 @@ public class Article extends RealmObject implements Serializable {
 
     @PrimaryKey
     int id;
+    int publisher_id;
     long publisher_time;
     String title;
     String image;
@@ -24,7 +25,6 @@ public class Article extends RealmObject implements Serializable {
     boolean status;
     boolean is_deleted;
     Category category;
-
 
     public int getId() {
         return id;
@@ -101,5 +101,14 @@ public class Article extends RealmObject implements Serializable {
 
     public void setText(@Nullable String text) {
         this.text = text;
+    }
+
+
+    public int getPublisherId() {
+        return publisher_id;
+    }
+
+    public void setPublisherId(int publisherId) {
+        this.publisher_id = publisherId;
     }
 }

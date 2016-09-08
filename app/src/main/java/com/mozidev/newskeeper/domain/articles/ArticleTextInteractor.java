@@ -2,6 +2,7 @@ package com.mozidev.newskeeper.domain.articles;
 
 import com.mozidev.newskeeper.data.APIDataProviderImpl;
 import com.mozidev.newskeeper.domain.common.Interactor;
+import com.mozidev.newskeeper.presentation.articles.ArticleViewModel;
 import com.mozidev.newskeeper.presentation.injection.DomainModule;
 
 import javax.inject.Inject;
@@ -11,7 +12,7 @@ import io.realm.Realm;
 import rx.Observable;
 import rx.Scheduler;
 
-public class ArticleTextInteractor extends Interactor<Void, Article> {
+public class ArticleTextInteractor extends Interactor<Void, ArticleViewModel> {
 
     private final APIDataProviderImpl provider;
     private Realm realm;
@@ -24,14 +25,17 @@ public class ArticleTextInteractor extends Interactor<Void, Article> {
     }
 
     @Override
-    protected Observable<Void> buildObservable(Article parameter) {
+    protected Observable<Void> buildObservable(ArticleViewModel parameter) {
         return realm.asObservable()
                 .map(it -> {
                     provider.getArticleText(parameter.getId())
                             .doOnNext(s -> {
                                 realm.beginTransaction();
                                 parameter.setText(s);
-                                realm.copyToRealmOrUpdate(parameter);
+                                realm.where(Article.class)
+                                        .equalTo("id", parameter.getId())
+                                        .findFirst()
+                                        .setText(s);
                                 realm.commitTransaction();
                             });
 

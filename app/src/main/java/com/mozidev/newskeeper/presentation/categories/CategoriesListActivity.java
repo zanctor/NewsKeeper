@@ -10,10 +10,13 @@ import com.mozidev.newskeeper.domain.categories.Category;
 import com.mozidev.newskeeper.presentation.common.BaseActivity;
 import com.mozidev.newskeeper.presentation.common.BasePresenter;
 import com.mozidev.newskeeper.presentation.common.Layout;
+import com.mozidev.newskeeper.presentation.injection.DaggerHelper;
 
 import java.util.List;
 
 import javax.inject.Inject;
+
+import io.realm.Realm;
 
 @Layout(id = R.layout.activity_categories_list)
 public class CategoriesListActivity extends BaseActivity implements CategoriesListView {
@@ -26,6 +29,7 @@ public class CategoriesListActivity extends BaseActivity implements CategoriesLi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        DaggerHelper.getMainComponent().inject(this);
         initToolbar(getToolbarTitle());
         toolbar.setNavigationOnClickListener(v -> categoriesPresenter.checkAndReturn());
     }
@@ -52,26 +56,42 @@ public class CategoriesListActivity extends BaseActivity implements CategoriesLi
     }
 
     @Override
-    public void setCategories(List<Category> data) {
+    public void setCategories(List<CategoryViewModel> data) {
         recycler.setLayoutManager(new LinearLayoutManager(this));
         adapter = new CategoriesListAdapter(data);
         adapter.setOnItemClickListener(v -> {
-            Category category = ((Category) v.getTag());
+            CategoryViewModel category = ((CategoryViewModel) v.getTag());
             category.setChecked(!category.isChecked());
             adapter.notifyDataSetChanged();
+            changeItemTitle(categoriesPresenter.isAtLeastOneSelected());
         });
         recycler.setAdapter(adapter);
     }
 
     @Override
     public void checkAll(boolean check) {
-        toolbar.getMenu().findItem(R.id.select_unselect).setTitle(check ? R.string.unselect_all : R.string.select_all);
+        changeItemTitle(check);
         adapter.checkAll(check);
     }
 
     @Override
+    public void changeItemTitle(boolean condition) {
+        toolbar.getMenu().findItem(R.id.select_unselect).setTitle(condition ? R.string.unselect_all : R.string.select_all);
+    }
+
+    @Override
+    public void onBackPressed() {
+        categoriesPresenter.checkAndReturn();
+    }
+
+    @Override
+    protected String getToolbarTitle() {
+        return getString(R.string.categories);
+    }
+
+    @Override
     public void showCheckDialog() {
-        new AlertDialog.Builder(this)
+        new AlertDialog.Builder(this, R.style.DialogStyle)
                 .setMessage(R.string.dialog_check_message)
                 .setNeutralButton(android.R.string.cancel, ((dialogInterface, i) -> {
                 }))

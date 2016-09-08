@@ -12,6 +12,7 @@ import com.mozidev.newskeeper.presentation.categories.CategoriesListActivity;
 import com.mozidev.newskeeper.presentation.common.BaseActivity;
 import com.mozidev.newskeeper.presentation.common.BasePresenter;
 import com.mozidev.newskeeper.presentation.common.Layout;
+import com.mozidev.newskeeper.presentation.injection.DaggerHelper;
 import com.mozidev.newskeeper.presentation.publishers.PublishersListActivity;
 import com.mozidev.newskeeper.presentation.settings.SettingsActivity;
 
@@ -33,6 +34,7 @@ public class ArticlesListActivity extends BaseActivity implements ArticlesListRo
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        DaggerHelper.getMainComponent().inject(this);
         initToolbar(getToolbarTitle());
         toolbar.setNavigationOnClickListener(v -> {
             startActivity(new Intent(this, PublishersListActivity.class));
@@ -72,16 +74,16 @@ public class ArticlesListActivity extends BaseActivity implements ArticlesListRo
     }
 
     @Override
-    public void openArticle(Article article) {
+    public void openArticle(ArticleViewModel article) {
         Intent intent = new Intent(this, ArticleDetailsActivity.class);
         intent.putExtra(Constants.EXTRA_ARTICLE, article);
         startActivity(intent);
     }
 
     @Override
-    public void updateArticles(List<Article> data) {
+    public void updateArticles(List<ArticleViewModel> data) {
         ArticlesListAdapter adapter = new ArticlesListAdapter(data);
-        adapter.setOnItemClickListener(v -> articlesPresenter.openArticle((Article) v.getTag()));
+        adapter.setOnItemClickListener(v -> articlesPresenter.openArticle((ArticleViewModel) v.getTag()));
         recycler.setAdapter(adapter);
     }
 

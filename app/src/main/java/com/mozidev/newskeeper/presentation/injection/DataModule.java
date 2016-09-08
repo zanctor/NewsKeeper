@@ -15,7 +15,9 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 import io.realm.Realm;
+import io.realm.RealmConfiguration;
 
+@Singleton
 @Module
 public class DataModule {
 
@@ -58,6 +60,8 @@ public class DataModule {
     @Singleton
     @Provides
     public Realm getRealm() {
+        Realm.setDefaultConfiguration(new RealmConfiguration.Builder(context).build());
+
         return Realm.getDefaultInstance();
     }
 

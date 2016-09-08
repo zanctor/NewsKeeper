@@ -7,19 +7,19 @@ import android.net.Uri;
 
 import com.mozidev.newskeeper.R;
 import com.mozidev.newskeeper.domain.articles.Article;
-import com.mozidev.newskeeper.domain.articles.ArticleTextInteractor;
+import com.mozidev.newskeeper.presentation.articles.ArticleViewModel;
 import com.mozidev.newskeeper.presentation.common.BasePresenter;
 
 import javax.inject.Inject;
-
-import rx.Subscriber;
+import javax.inject.Singleton;
 
 /**
  * Created by mozi on 31.08.16.
  */
+@Singleton
 public class ArticleDetailsPresenter extends BasePresenter<ArticleDetailsView, ArticleDetailsRouter> {
 
-    private Article article;
+    private ArticleViewModel article;
     private Context context;
 
     @Inject
@@ -27,9 +27,8 @@ public class ArticleDetailsPresenter extends BasePresenter<ArticleDetailsView, A
         this.context = context;
     }
 
-    public void init(Article article) {
+    public void init(ArticleViewModel article) {
         this.article = article;
-        getView().setToolbar(article.getTitle());
     }
 
     @Override
@@ -57,7 +56,7 @@ public class ArticleDetailsPresenter extends BasePresenter<ArticleDetailsView, A
 
         }
         intent.setData(Uri.parse(article.getVideo()));
-        getRouter().showLink(intent);
+        getRouter().showVideo(intent);
     }
 
     public void shareArticle() {

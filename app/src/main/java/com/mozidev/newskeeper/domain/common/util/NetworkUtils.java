@@ -9,15 +9,12 @@ import android.net.NetworkInfo;
  */
 public class NetworkUtils {
 
-    public static boolean isConnected(Context context){
+    public static boolean isConnected(Context context) {
         if (context == null) return false;
-        NetworkInfo info = NetworkUtils.getNetworkInfo(context);
-        return (info != null && info.isConnected());
-    }
-
-    public static NetworkInfo getNetworkInfo(Context context) {
-        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        return cm.getActiveNetworkInfo();
+        ConnectivityManager cm =
+                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 
 }

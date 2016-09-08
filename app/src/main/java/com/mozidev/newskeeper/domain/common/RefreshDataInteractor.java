@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.inject.Singleton;
 
 import io.realm.Realm;
 import io.realm.RealmObject;
@@ -16,6 +17,7 @@ import rx.Scheduler;
 /**
  * Created by mozi on 01.09.16.
  */
+@Singleton
 public class RefreshDataInteractor extends Interactor<Object, Void> {
 
     APIDataProviderImpl provider;
@@ -33,21 +35,26 @@ public class RefreshDataInteractor extends Interactor<Object, Void> {
         return provider.getPublishers()
                 .flatMap(it -> {
                     saveData(it);
+                    System.out.println("FUCK " + "publishers size: " + it.size());
                     return provider.getCategories();
                 })
                 .flatMap(it -> {
                     saveData(it);
+                    System.out.println("FUCK " + "categories size: " + it.size());
                     return provider.getArticles();
                 })
                 .flatMap(it -> {
                     saveData(it);
+                    System.out.println("FUCK " + "articles size: " + it.size());
                     return Observable.empty();
                 });
     }
 
     private void saveData(List<? extends RealmObject> data) {
+        Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();
         realm.copyToRealmOrUpdate(data);
         realm.commitTransaction();
+        System.out.println("FUCK " + "saved list size: " + data.size());
     }
 }

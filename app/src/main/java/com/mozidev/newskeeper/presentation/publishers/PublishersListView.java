@@ -9,7 +9,7 @@ import java.util.List;
  */
 public interface PublishersListView {
 
-    void setPublishers(List<Publisher> data);
+    void setPublishers(List<PublisherViewModel> data);
 
     void showNotificationsDialog();
 
@@ -18,5 +18,7 @@ public interface PublishersListView {
     void showCheckDialog();
 
     void showDataDialog();
+
+    void changeItemTitle(boolean condition);
 
 }

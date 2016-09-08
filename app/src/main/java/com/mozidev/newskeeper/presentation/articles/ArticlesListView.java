@@ -9,6 +9,6 @@ import java.util.List;
  */
 public interface ArticlesListView {
 
-    void updateArticles(List<Article> data);
+    void updateArticles(List<ArticleViewModel> data);
 
 }

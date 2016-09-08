@@ -1,34 +1,48 @@
 package com.mozidev.newskeeper.presentation.publishers;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.mozidev.newskeeper.R;
 import com.mozidev.newskeeper.domain.publishers.Publisher;
+import com.mozidev.newskeeper.presentation.injection.DaggerHelper;
 
 import java.util.List;
 
-import butterknife.BindView;
+import javax.inject.Inject;
+
+import butterknife.Bind;
 import butterknife.ButterKnife;
+import io.realm.Realm;
 
 /**
  * Created by mozi on 31.08.16.
  */
 public class PublishersListAdapter extends RecyclerView.Adapter<PublishersListAdapter.ViewHolder> {
 
-    private List<Publisher> data;
-    private View.OnClickListener onItemClickListener;
+    @Inject
+    Context context;
+    @Inject
+    PublishersPresenter presenter;
+    private List<PublisherViewModel> data;
+    private View.OnClickListener onClickListener;
 
-    public PublishersListAdapter(List<Publisher> data) {
+    public PublishersListAdapter(List<PublisherViewModel> data) {
         this.data = data;
     }
 
-    public void setOnItemClickListener(View.OnClickListener onItemClickListener) {
-        this.onItemClickListener = onItemClickListener;
+    public void setOnClickListener(View.OnClickListener onClickListener) {
+        DaggerHelper.getMainComponent().inject(this);
+        this.onClickListener = onClickListener;
     }
 
     @Override
@@ -49,30 +63,44 @@ public class PublishersListAdapter extends RecyclerView.Adapter<PublishersListAd
 
     public void checkAll(boolean check) {
         if (data != null) {
-            for (Publisher publisher : data) {
+            for (PublisherViewModel publisher : data) {
                 publisher.setChecked(check);
             }
+            notifyDataSetChanged();
         }
-        notifyDataSetChanged();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.publisher_name)
+        @Bind(R.id.publisher_name)
         TextView publisherName;
-        @BindView(R.id.publisher_check)
+        @Bind(R.id.publisher_check)
         CheckBox publisherCheck;
+        @Bind(R.id.publisher_logo)
+        ImageView publisherLogo;
+        @Bind(R.id.container)
+        LinearLayout container;
 
         public ViewHolder(View view) {
             super(view);
             ButterKnife.bind(this, view);
-            itemView.setOnClickListener(onItemClickListener);
         }
 
-        public void bind(Publisher publisher) {
+        public void bind(PublisherViewModel publisher) {
+            container.setOnClickListener(onClickListener);
             publisherName.setText(publisher.getPublisherName());
             publisherCheck.setChecked(publisher.isChecked());
-            itemView.setTag(publisher);
+            publisherCheck.setOnClickListener(v -> {
+                PublisherViewModel model = ((PublisherViewModel) container.getTag());
+                publisherCheck.setChecked(!model.isChecked());
+                model.setChecked(!model.isChecked());
+                presenter.getView().changeItemTitle(presenter.isAtLeastOneSelected());
+            });
+            Glide.with(context)
+                    .load(publisher.getLogo())
+                    .placeholder(R.drawable.placeholder)
+                    .into(publisherLogo);
+            container.setTag(publisher);
         }
     }
 }

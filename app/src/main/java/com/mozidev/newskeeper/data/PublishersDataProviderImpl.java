@@ -2,6 +2,7 @@ package com.mozidev.newskeeper.data;
 
 import com.mozidev.newskeeper.domain.publishers.Publisher;
 import com.mozidev.newskeeper.domain.publishers.PublishersDataProvider;
+import com.mozidev.newskeeper.presentation.publishers.PublisherViewModel;
 
 import java.util.List;
 
@@ -21,25 +22,15 @@ public class PublishersDataProviderImpl implements PublishersDataProvider {
 
     @Override
     public Observable<List<Publisher>> getPublishers() {
-        return realm.asObservable()
-                .map(it -> it.where(Publisher.class)
-                .not()
-                .equalTo("is_deleted", true)
-                .findAll());
+        return Observable.just(realm.where(Publisher.class)
+                        .equalTo("is_deleted", false)
+                        .findAll());
     }
 
     @Override
-    public Observable<String> getPublisherLogo(Integer id) {
-        return realm.asObservable()
-                .map(it -> it.where(Publisher.class)
-                        .equalTo("id", id)
-                        .findFirst()
-                        .getLogo());
-    }
-
-    @Override
-    public void savePublishers(List<Publisher> data) {
-        Realm.getDefaultInstance()
-                .copyToRealmOrUpdate(data);
+    public void savePublishers(List<PublisherViewModel> data) {
+        realm.beginTransaction();
+        realm.copyToRealmOrUpdate(Publisher.create(data));
+        realm.commitTransaction();
     }
 }

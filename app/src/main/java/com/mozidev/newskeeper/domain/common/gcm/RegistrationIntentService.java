@@ -2,15 +2,16 @@ package com.mozidev.newskeeper.domain.common.gcm;
 
 import android.app.IntentService;
 import android.content.Intent;
+import android.provider.Settings;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
-import com.mozidev.newskeeper.NewsKeeper;
 import com.mozidev.newskeeper.R;
 import com.mozidev.newskeeper.data.APIDataProviderImpl;
 import com.mozidev.newskeeper.domain.common.MainPrefs;
+import com.mozidev.newskeeper.presentation.injection.DaggerHelper;
 
 import java.io.IOException;
 
@@ -26,7 +27,7 @@ public class RegistrationIntentService extends IntentService {
 
     public RegistrationIntentService() {
         super(TAG);
-        NewsKeeper.getComponent().inject(this);
+        DaggerHelper.getMainComponent().inject(this);
     }
 
     @Override
@@ -45,7 +46,7 @@ public class RegistrationIntentService extends IntentService {
             Log.i(TAG, "GCM Registration Token: " + token);
 
             // TODO: Implement this method to send any registration to your app's servers.
-            sendRegistrationToServer(token);
+            sendRegistrationToServer();
 
             // You should store a boolean that indicates whether the generated token has been
             // sent to your server. If the boolean is false, send the token to your server,
@@ -63,24 +64,12 @@ public class RegistrationIntentService extends IntentService {
         LocalBroadcastManager.getInstance(this).sendBroadcast(registrationComplete);
     }
 
-    /**
-     * Persist registration to third-party servers.
-     * <p>
-     * Modify this method to associate the user's GCM registration token with any server-side account
-     * maintained by your application.
-     *
-     * @param token The new token.
-     */
-    private void sendRegistrationToServer(String token) {
-        rest.postRegisterDevice(token)
+    private void sendRegistrationToServer() {
+        String id = Settings.Secure.getString(getContentResolver(),
+                Settings.Secure.ANDROID_ID);
+
+        rest.postRegisterDevice(id)
                 .subscribe();
     }
-
-    /**
-     * Subscribe to any GCM topics of interest, as defined by the TOPICS constant.
-     *
-     * @param token GCM token
-     * @throws IOException if unable to reach the GCM PubSub service
-     */
 
 }

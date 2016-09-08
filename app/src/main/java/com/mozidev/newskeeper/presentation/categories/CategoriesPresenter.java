@@ -1,29 +1,39 @@
 package com.mozidev.newskeeper.presentation.categories;
 
+import android.content.Context;
+
 import com.mozidev.newskeeper.domain.categories.Category;
 import com.mozidev.newskeeper.domain.categories.GetCategoriesInteractor;
 import com.mozidev.newskeeper.domain.categories.SaveCategoriesInteractor;
+import com.mozidev.newskeeper.domain.common.SaveFiltersInteractor;
+import com.mozidev.newskeeper.domain.common.util.NetworkUtils;
 import com.mozidev.newskeeper.presentation.common.BasePresenter;
 
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import rx.Subscriber;
 
 /**
  * Created by mozi on 31.08.16.
  */
+@Singleton
 public class CategoriesPresenter extends BasePresenter<CategoriesListView, Void> {
 
     private final GetCategoriesInteractor getCategoriesInteractor;
     private final SaveCategoriesInteractor saveCategoriesInteractor;
-    private List<Category> data;
+    private final SaveFiltersInteractor saveFiltersInteractor;
+    private List<CategoryViewModel> data;
+    private Context context;
 
     @Inject
-    public CategoriesPresenter(GetCategoriesInteractor getCategoriesInteractor, SaveCategoriesInteractor saveCategoriesInteractor) {
+    public CategoriesPresenter(GetCategoriesInteractor getCategoriesInteractor, SaveCategoriesInteractor saveCategoriesInteractor, SaveFiltersInteractor saveFiltersInteractor, Context context) {
         this.getCategoriesInteractor = getCategoriesInteractor;
         this.saveCategoriesInteractor = saveCategoriesInteractor;
+        this.saveFiltersInteractor = saveFiltersInteractor;
+        this.context = context;
     }
 
     @Override
@@ -36,13 +46,13 @@ public class CategoriesPresenter extends BasePresenter<CategoriesListView, Void>
 
             @Override
             public void onError(Throwable e) {
-
+                e.printStackTrace();
             }
 
             @Override
             public void onNext(List<Category> categories) {
-                data = categories;
-                getView().setCategories(categories);
+                data = CategoryViewModel.create(categories);
+                getView().setCategories(data);
             }
         });
     }
@@ -52,18 +62,20 @@ public class CategoriesPresenter extends BasePresenter<CategoriesListView, Void>
         getCategoriesInteractor.unsubscribe();
     }
 
-    public void selectUnselect() {
-        for (Category category : data) {
-            if (category.isChecked()) {
-                getView().checkAll(true);
-                return;
+    void selectUnselect() {
+        if (data != null) {
+            for (CategoryViewModel category : data) {
+                if (category.isChecked()) {
+                    getView().checkAll(false);
+                    return;
+                }
             }
+            getView().checkAll(true);
         }
-        getView().checkAll(false);
     }
 
-    private boolean isAtLeastOneSelected() {
-        for (Category category : data) {
+    boolean isAtLeastOneSelected() {
+        for (CategoryViewModel category : data) {
             if (category.isChecked()) {
                 return true;
             }
@@ -71,23 +83,46 @@ public class CategoriesPresenter extends BasePresenter<CategoriesListView, Void>
         return false;
     }
 
-    public void checkAndReturn() {
-        if (isAtLeastOneSelected()) {
-            saveData();
+    void checkAndReturn() {
+        if (data != null) {
+            if (isAtLeastOneSelected()) {
+                saveData();
+            } else {
+                showCheckDialog();
+            }
         } else {
-            showCheckDialog();
+            ((CategoriesListActivity) getView()).finish();
         }
     }
 
-    public void showCheckDialog() {
+    private void showCheckDialog() {
         getView().showCheckDialog();
     }
 
-    public void saveData() {
+    private void saveData() {
         saveCategoriesInteractor.execute(data, new Subscriber<Void>() {
             @Override
             public void onCompleted() {
+                if (NetworkUtils.isConnected(context)) {
+                    saveFiltersInteractor.execute(new Subscriber<Object>() {
 
+                        @Override
+                        public void onNext(Object o) {
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+
+                        }
+
+                        @Override
+                        public void onCompleted() {
+
+                        }
+                    });
+                }
+                ((CategoriesListActivity) getView()).finish();
             }
 
             @Override
@@ -97,7 +132,7 @@ public class CategoriesPresenter extends BasePresenter<CategoriesListView, Void>
 
             @Override
             public void onNext(Void aVoid) {
-                ((CategoriesListActivity) getView()).finish();
+
             }
         });
     }

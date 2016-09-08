@@ -1,6 +1,7 @@
 package com.mozidev.newskeeper.domain.articles;
 
 import com.mozidev.newskeeper.domain.common.Interactor;
+import com.mozidev.newskeeper.presentation.articles.ArticleViewModel;
 import com.mozidev.newskeeper.presentation.injection.DomainModule;
 
 import java.util.List;
@@ -11,7 +12,7 @@ import javax.inject.Named;
 import rx.Observable;
 import rx.Scheduler;
 
-public class ArticlesListInteractor extends Interactor<List<Article>, Void> {
+public class ArticlesListInteractor extends Interactor<List<ArticleViewModel>, Void> {
 
     private final ArticlesDataProvider articlesDataProvider;
 
@@ -22,7 +23,7 @@ public class ArticlesListInteractor extends Interactor<List<Article>, Void> {
     }
 
     @Override
-    protected Observable<List<Article>> buildObservable(Void parameter) {
+    protected Observable<List<ArticleViewModel>> buildObservable(Void parameter) {
         return articlesDataProvider.getArticles();
     }
 }

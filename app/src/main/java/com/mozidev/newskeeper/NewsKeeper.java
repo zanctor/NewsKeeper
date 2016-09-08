@@ -3,25 +3,19 @@ package com.mozidev.newskeeper;
 import android.app.Application;
 
 import com.crashlytics.android.Crashlytics;
-import com.mozidev.newskeeper.presentation.injection.DaggerMainComponent;
-import com.mozidev.newskeeper.presentation.injection.DataModule;
-import com.mozidev.newskeeper.presentation.injection.MainComponent;
+import com.mozidev.newskeeper.presentation.injection.DaggerHelper;
 
+import butterknife.ButterKnife;
 import io.fabric.sdk.android.Fabric;
 
 public class NewsKeeper extends Application {
 
-    private static MainComponent component;
-
-    public static MainComponent getComponent() {
-        return component;
-    }
-
     @Override
     public void onCreate() {
         super.onCreate();
-        initFabric();
+        ButterKnife.setDebug(true);
         initDagger();
+        initFabric();
     }
 
     private void initFabric() {
@@ -29,8 +23,6 @@ public class NewsKeeper extends Application {
     }
 
     private void initDagger() {
-        component = DaggerMainComponent.builder()
-                .dataModule(new DataModule(this))
-                .build();
+        DaggerHelper.init(this);
     }
 }

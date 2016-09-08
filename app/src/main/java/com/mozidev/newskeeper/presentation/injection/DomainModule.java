@@ -18,6 +18,7 @@ import rx.schedulers.Schedulers;
 /**
  * Created by mozi on 31.08.16.
  */
+@Singleton
 @Module
 public class DomainModule {
 

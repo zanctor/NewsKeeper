@@ -8,9 +8,11 @@
     <string name="unselect_all">Unselect all</string>
     <string name="select_all">Select all</string>
     <string name="publishers">Publishers</string>
-    <string name="dialog_check_message">There is no selected items. Select all?</string>
+    <string name="dialog_check_message">There are no selected items. Select all?</string>
     <string name="view_articles">View articles</string>
     <string name="clear_memory">Clear memory</string>
     <string name="data_warning">The app is launched without Internet. Any data will not be loaded.</string>
     <string name="share">Share</string>
+    <string name="categories">Categories</string>
+    <string name="send">Send</string>
 </resources>

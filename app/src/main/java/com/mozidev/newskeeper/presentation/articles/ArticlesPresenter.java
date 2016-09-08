@@ -8,12 +8,11 @@ import com.mozidev.newskeeper.presentation.common.BasePresenter;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import rx.Subscriber;
 
-/**
- * Created by mozi on 31.08.16.
- */
+@Singleton
 public class ArticlesPresenter extends BasePresenter<ArticlesListView, ArticlesListRouter> {
 
     private final ArticlesListInteractor articlesListInteractor;
@@ -39,7 +38,7 @@ public class ArticlesPresenter extends BasePresenter<ArticlesListView, ArticlesL
         getRouter().openCategories();
     }
 
-    public void openArticle(Article article) {
+    public void openArticle(ArticleViewModel article) {
         if (article.getText() == null) {
             articleTextInteractor.execute(article, new Subscriber<Void>() {
                 @Override
@@ -67,7 +66,7 @@ public class ArticlesPresenter extends BasePresenter<ArticlesListView, ArticlesL
     }
 
     public void updateArticles() {
-        articlesListInteractor.execute(new Subscriber<List<Article>>() {
+        articlesListInteractor.execute(new Subscriber<List<ArticleViewModel>>() {
             @Override
             public void onCompleted() {
 
@@ -75,11 +74,11 @@ public class ArticlesPresenter extends BasePresenter<ArticlesListView, ArticlesL
 
             @Override
             public void onError(Throwable e) {
-
+                e.printStackTrace();
             }
 
             @Override
-            public void onNext(List<Article> articles) {
+            public void onNext(List<ArticleViewModel> articles) {
                 getView().updateArticles(articles);
             }
         });

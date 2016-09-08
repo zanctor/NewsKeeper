@@ -1,6 +1,7 @@
 package com.mozidev.newskeeper.domain.categories;
 
 import com.mozidev.newskeeper.domain.common.Interactor;
+import com.mozidev.newskeeper.presentation.categories.CategoryViewModel;
 import com.mozidev.newskeeper.presentation.injection.DomainModule;
 
 import java.util.List;
@@ -14,7 +15,7 @@ import rx.Scheduler;
 /**
  * Created by mozi on 02.09.16.
  */
-public class SaveCategoriesInteractor extends Interactor<Void, List<Category>> {
+public class SaveCategoriesInteractor extends Interactor<Void, List<CategoryViewModel>> {
 
     CategoriesDataProvider provider;
 
@@ -25,7 +26,7 @@ public class SaveCategoriesInteractor extends Interactor<Void, List<Category>> {
     }
 
     @Override
-    protected Observable<Void> buildObservable(List<Category> parameter) {
+    protected Observable<Void> buildObservable(List<CategoryViewModel> parameter) {
         provider.saveCategories(parameter);
 
         return Observable.empty();

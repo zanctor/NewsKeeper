@@ -9,15 +9,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.mozidev.newskeeper.NewsKeeper;
 import com.mozidev.newskeeper.R;
 import com.mozidev.newskeeper.domain.articles.Article;
+import com.mozidev.newskeeper.presentation.injection.DaggerHelper;
 
 import java.util.List;
 
 import javax.inject.Inject;
 
-import butterknife.BindView;
+import butterknife.Bind;
 import butterknife.ButterKnife;
 
 /**
@@ -27,11 +27,11 @@ public class ArticlesListAdapter extends RecyclerView.Adapter<ArticlesListAdapte
 
     @Inject
     Context context;
-    private List<Article> data;
+    private List<ArticleViewModel> data;
     private View.OnClickListener onItemClickListener;
 
-    public ArticlesListAdapter(List<Article> data) {
-        NewsKeeper.getComponent().inject(this);
+    public ArticlesListAdapter(List<ArticleViewModel> data) {
+        DaggerHelper.getMainComponent().inject(this);
         this.data = data;
     }
 
@@ -57,12 +57,14 @@ public class ArticlesListAdapter extends RecyclerView.Adapter<ArticlesListAdapte
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.article_title)
+        @Bind(R.id.article_title)
         TextView articleTitle;
-        @BindView(R.id.article_image)
+        @Bind(R.id.article_image)
         ImageView articleImage;
-        @BindView(R.id.article_time)
+        @Bind(R.id.article_time)
         TextView articleTime;
+        @Bind(R.id.publisher_title)
+        TextView publisherTitle;
 
         public ViewHolder(View view) {
             super(view);
@@ -70,11 +72,13 @@ public class ArticlesListAdapter extends RecyclerView.Adapter<ArticlesListAdapte
             itemView.setOnClickListener(onItemClickListener);
         }
 
-        public void bind(Article article) {
+        public void bind(ArticleViewModel article) {
             articleTitle.setText(article.getTitle());
             articleTime.setText(String.valueOf(article.getPublisherTime()));
+            publisherTitle.setText(article.getPublisherName());
             Glide.with(context)
                     .load(article.getImage())
+                    .placeholder(R.drawable.placeholder)
                     .centerCrop()
                     .into(articleImage);
             itemView.setTag(article);

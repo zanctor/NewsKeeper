@@ -1,8 +1,10 @@
 package com.mozidev.newskeeper.presentation.article_details;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -12,13 +14,15 @@ import com.bumptech.glide.Glide;
 import com.mozidev.newskeeper.Constants;
 import com.mozidev.newskeeper.R;
 import com.mozidev.newskeeper.domain.articles.Article;
+import com.mozidev.newskeeper.presentation.articles.ArticleViewModel;
 import com.mozidev.newskeeper.presentation.common.BaseActivity;
 import com.mozidev.newskeeper.presentation.common.BasePresenter;
 import com.mozidev.newskeeper.presentation.common.Layout;
+import com.mozidev.newskeeper.presentation.injection.DaggerHelper;
 
 import javax.inject.Inject;
 
-import butterknife.BindView;
+import butterknife.Bind;
 
 @Layout(id = R.layout.activity_article_details)
 public class ArticleDetailsActivity extends BaseActivity implements ArticleDetailsView, ArticleDetailsRouter {
@@ -26,24 +30,31 @@ public class ArticleDetailsActivity extends BaseActivity implements ArticleDetai
     @Inject
     ArticleDetailsPresenter articleDetailsPresenter;
 
-    @BindView(R.id.image_article)
+    @Bind(R.id.image_article)
     ImageView articleImage;
-    @BindView(R.id.title_article)
+    @Bind(R.id.title_article)
     TextView articleTitle;
-    @BindView(R.id.text_article)
+    @Bind(R.id.text_article)
     TextView articleText;
-    @BindView(R.id.button_visit_site)
+    @Bind(R.id.button_visit_site)
     Button visitSiteButton;
-    @BindView(R.id.button_view_video)
+    @Bind(R.id.button_view_video)
     Button viewVideoButton;
 
-    private Article article;
+    private ArticleViewModel article;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        article = (Article) getIntent().getSerializableExtra(Constants.EXTRA_ARTICLE);
+        DaggerHelper.getMainComponent().inject(this);
+        initToolbar(getToolbarTitle());
+        article = (ArticleViewModel) getIntent().getSerializableExtra(Constants.EXTRA_ARTICLE);
         articleDetailsPresenter.init(article);
+    }
+
+    @Override
+    protected String getToolbarTitle() {
+        return getString(R.string.app_name);
     }
 
     @Override
@@ -60,7 +71,7 @@ public class ArticleDetailsActivity extends BaseActivity implements ArticleDetai
     protected Toolbar.OnMenuItemClickListener getItemMenuListener() {
         return item -> {
             if (item.getItemId() == R.id.action_share) {
-               articleDetailsPresenter.shareArticle();
+                articleDetailsPresenter.shareArticle();
 
                 return true;
             }
@@ -80,10 +91,14 @@ public class ArticleDetailsActivity extends BaseActivity implements ArticleDetai
     }
 
     @Override
-    public void fillContent(Article article) {
+    public void fillContent(ArticleViewModel article) {
+        String image = article.getImage();
         if (article.getVideo() == null) {
             viewVideoButton.setVisibility(View.GONE);
         } else {
+            if (article.getImage() == null) {
+                image = "http://img.youtube.com/vi/" + Uri.parse(article.getVideo()).getQueryParameter("v") + "/0.jpg";
+            }
             viewVideoButton.setOnClickListener(v -> articleDetailsPresenter.showVideo());
         }
         if (article.getLink() == null) {
@@ -91,16 +106,13 @@ public class ArticleDetailsActivity extends BaseActivity implements ArticleDetai
         } else {
             visitSiteButton.setOnClickListener(v -> articleDetailsPresenter.showLink());
         }
+        articleTitle.setText(article.getTitle());
         Glide.with(this)
-                .load(article.getImage())
+                .load(image)
+                .placeholder(R.drawable.placeholder)
                 .centerCrop()
                 .into(articleImage);
-        articleText.setText(article.getText());
-        articleTitle.setText(article.getTitle());
+        articleText.setText(Html.fromHtml(article.getText()));
     }
 
-    @Override
-    public void setToolbar(String title) {
-        initToolbar(title);
-    }
 }

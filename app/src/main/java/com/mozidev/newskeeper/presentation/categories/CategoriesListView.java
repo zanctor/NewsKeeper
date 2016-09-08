@@ -1,7 +1,5 @@
 package com.mozidev.newskeeper.presentation.categories;
 
-import com.mozidev.newskeeper.domain.categories.Category;
-
 import java.util.List;
 
 /**
@@ -9,10 +7,12 @@ import java.util.List;
  */
 public interface CategoriesListView {
 
-    void setCategories(List<Category> data);
+    void setCategories(List<CategoryViewModel> data);
 
     void checkAll(boolean check);
 
     void showCheckDialog();
+
+    void changeItemTitle(boolean condition);
 
 }

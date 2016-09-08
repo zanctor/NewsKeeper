@@ -11,10 +11,11 @@ import com.mozidev.newskeeper.R;
 import com.mozidev.newskeeper.presentation.common.BaseActivity;
 import com.mozidev.newskeeper.presentation.common.BasePresenter;
 import com.mozidev.newskeeper.presentation.common.Layout;
+import com.mozidev.newskeeper.presentation.injection.DaggerHelper;
 
 import javax.inject.Inject;
 
-import butterknife.BindView;
+import butterknife.Bind;
 
 @Layout(id = R.layout.activity_settings)
 public class SettingsActivity extends BaseActivity implements SettingsView, SettingsRouter {
@@ -22,16 +23,18 @@ public class SettingsActivity extends BaseActivity implements SettingsView, Sett
     @Inject
     SettingsPresenter settingsPresenter;
 
-    @BindView(R.id.switch_notifications)
+    @Bind(R.id.switch_notifications)
     SwitchCompat notificationsSwitch;
-    @BindView(R.id.button_clear)
+    @Bind(R.id.button_clear)
     Button clearButton;
-    @BindView(R.id.button_google_play)
+    @Bind(R.id.button_google_play)
     ImageButton googlePlayButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        DaggerHelper.getMainComponent().inject(this);
+        initToolbar(getToolbarTitle());
         clearButton.setOnClickListener(v -> settingsPresenter.showClearDialog());
         notificationsSwitch.setOnCheckedChangeListener((compoundButton, b) -> settingsPresenter.setNotfications(b));
         googlePlayButton.setOnClickListener(v -> settingsPresenter.openPlayStore());
@@ -49,7 +52,7 @@ public class SettingsActivity extends BaseActivity implements SettingsView, Sett
 
     @Override
     public void showClearMemoryDialog() {
-        new AlertDialog.Builder(this)
+        new AlertDialog.Builder(this, R.style.DialogStyle)
                 .setMessage("Are you sure to clear cached memory?")
                 .setNeutralButton(android.R.string.cancel, ((dialogInterface, i) -> {
                 }))

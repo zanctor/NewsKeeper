@@ -7,7 +7,7 @@ import com.mozidev.newskeeper.domain.articles.Article;
  */
 public interface ArticlesListRouter {
 
-    void openArticle(Article article);
+    void openArticle(ArticleViewModel article);
 
     void openCategories();
 

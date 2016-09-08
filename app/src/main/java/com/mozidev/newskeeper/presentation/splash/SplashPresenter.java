@@ -10,20 +10,19 @@ import com.mozidev.newskeeper.domain.common.RefreshDataInteractor;
 import com.mozidev.newskeeper.domain.common.gcm.RegistrationIntentService;
 import com.mozidev.newskeeper.domain.common.util.NetworkUtils;
 import com.mozidev.newskeeper.presentation.articles.ArticlesListActivity;
-import com.mozidev.newskeeper.presentation.categories.CategoriesListActivity;
 import com.mozidev.newskeeper.presentation.common.BaseActivity;
 import com.mozidev.newskeeper.presentation.common.BasePresenter;
+import com.mozidev.newskeeper.presentation.publishers.PublishersListActivity;
 
 import java.util.Timer;
 import java.util.TimerTask;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import rx.Subscriber;
 
-/**
- * Created by mozi on 31.08.16.
- */
+@Singleton
 public class SplashPresenter extends BasePresenter<Void, SplashRouter> {
 
     private static final int SPLASH_DELAY = 5000;
@@ -45,22 +44,22 @@ public class SplashPresenter extends BasePresenter<Void, SplashRouter> {
         if (checkPlayServices()) {
             context.startService(new Intent(context, RegistrationIntentService.class));
         }
-        final Intent intent = new Intent(context, prefs.isFirstRun() ? CategoriesListActivity.class : ArticlesListActivity.class);
+        final Intent intent = new Intent(context, prefs.isFirstRun() ? PublishersListActivity.class : ArticlesListActivity.class);
         if (NetworkUtils.isConnected(context)) {
             refreshDataInteractor.execute(new Subscriber<Object>() {
                 @Override
                 public void onCompleted() {
-
+                    getRouter().openMainScreen(intent);
                 }
 
                 @Override
                 public void onError(Throwable e) {
-
+                    e.printStackTrace();
                 }
 
                 @Override
                 public void onNext(Object obj) {
-                    getRouter().openMainScreen(intent);
+
                 }
             });
         } else {

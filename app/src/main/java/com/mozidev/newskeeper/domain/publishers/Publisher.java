@@ -2,31 +2,69 @@ package com.mozidev.newskeeper.domain.publishers;
 
 import android.support.annotation.Nullable;
 
+import com.mozidev.newskeeper.presentation.publishers.PublisherViewModel;
+
 import java.io.Serializable;
+import java.util.List;
 
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
+import rx.Observable;
 
-/**
- * Created by mozi on 31.08.16.
- */
 public class Publisher extends RealmObject implements Serializable {
 
     @PrimaryKey
-    int id;
-    String publisher_name;
-    String description;
-    String logo;
+    private int id;
+    private  String publisher_name;
+    private String description;
+    private  String logo;
     @Nullable
-    String phone;
+    private String phone;
     @Nullable
-    String email;
+    private String stream;
+    private String email;
     @Nullable
-    String site;
+    private String site;
     @Nullable
-    String address;
-    boolean is_deleted;
-    boolean checked = true;
+    private String address;
+    private boolean is_deleted;
+    private boolean checked = true;
+
+    public Publisher() {}
+
+    private Publisher(int id, String publisher_name, String description, String logo, String phone, String stream, String email, String site, String address, boolean checked) {
+        this.id = id;
+        this.publisher_name = publisher_name;
+        this.description = description;
+        this.logo = logo;
+        this.phone = phone;
+        this.stream = stream;
+        this.email = email;
+        this.site = site;
+        this.address = address;
+        this.checked = checked;
+    }
+
+    public static Publisher create(PublisherViewModel publisher) {
+        return publisher == null ? null : new Publisher(publisher.getId(),
+                publisher.getPublisherName(),
+                publisher.getDescription(),
+                publisher.getLogo(),
+                publisher.getPhone(),
+                publisher.getStream(),
+                publisher.getEmail(),
+                publisher.getSite(),
+                publisher.getAddress(),
+                publisher.isChecked());
+    }
+
+    public static List<Publisher> create(List<PublisherViewModel> publishers) {
+        return publishers == null ? null : Observable.from(publishers)
+                .map(Publisher::create)
+                .toList()
+                .toBlocking()
+                .first();
+    }
 
     public int getId() {
         return id;
@@ -92,15 +130,20 @@ public class Publisher extends RealmObject implements Serializable {
         this.address = address;
     }
 
-    public boolean isDeleted() {
-        return is_deleted;
-    }
-
     public boolean isChecked() {
         return checked;
     }
 
     public void setChecked(boolean checked) {
         this.checked = checked;
+    }
+
+    @Nullable
+    public String getStream() {
+        return stream;
+    }
+
+    public void setStream(@Nullable String stream) {
+        this.stream = stream;
     }
 }

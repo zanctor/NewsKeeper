@@ -1,7 +1,12 @@
 package com.mozidev.newskeeper.domain.categories;
 
+import com.mozidev.newskeeper.presentation.categories.CategoryViewModel;
+
+import java.util.List;
+
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
+import rx.Observable;
 
 public class Category extends RealmObject {
 
@@ -41,5 +46,25 @@ public class Category extends RealmObject {
 
     public void setDeleted(boolean is_deleted) {
         this.is_deleted = is_deleted;
+    }
+
+    public Category(){}
+
+    Category(int id, String title, boolean checked) {
+        this.id = id;
+        this.title = title;
+        this.checked = checked;
+    }
+
+    public static Category create(CategoryViewModel category) {
+        return category == null ? null : new Category(category.getId(), category.getTitle(), category.isChecked());
+    }
+
+    public static List<Category> create(List<CategoryViewModel> categories) {
+        return categories == null ? null : Observable.from(categories)
+                .map(Category::create)
+                .toList()
+                .toBlocking()
+                .first();
     }
 }

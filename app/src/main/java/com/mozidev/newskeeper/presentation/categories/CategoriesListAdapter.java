@@ -12,18 +12,19 @@ import com.mozidev.newskeeper.domain.categories.Category;
 
 import java.util.List;
 
-import butterknife.BindView;
+import butterknife.Bind;
 import butterknife.ButterKnife;
+import io.realm.Realm;
 
 /**
  * Created by mozi on 31.08.16.
  */
 public class CategoriesListAdapter extends RecyclerView.Adapter<CategoriesListAdapter.ViewHolder> {
 
-    private List<Category> data;
+    private List<CategoryViewModel> data;
     private View.OnClickListener onItemClickListener;
 
-    public CategoriesListAdapter(List<Category> data) {
+    public CategoriesListAdapter(List<CategoryViewModel> data) {
         this.data = data;
     }
 
@@ -49,18 +50,18 @@ public class CategoriesListAdapter extends RecyclerView.Adapter<CategoriesListAd
 
     public void checkAll(boolean check) {
         if (data != null) {
-            for (Category category : data) {
+            for (CategoryViewModel category : data) {
                 category.setChecked(check);
             }
+            notifyDataSetChanged();
         }
-        notifyDataSetChanged();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.category_title)
+        @Bind(R.id.category_title)
         TextView categoryTitle;
-        @BindView(R.id.category_check)
+        @Bind(R.id.category_check)
         CheckBox categoryCheck;
 
         public ViewHolder(View view) {
@@ -69,7 +70,7 @@ public class CategoriesListAdapter extends RecyclerView.Adapter<CategoriesListAd
             itemView.setOnClickListener(onItemClickListener);
         }
 
-        public void bind(Category category) {
+        public void bind(CategoryViewModel category) {
             categoryTitle.setText(category.getTitle());
             categoryCheck.setChecked(category.isChecked());
             itemView.setTag(category);

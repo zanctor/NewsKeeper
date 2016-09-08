@@ -29,9 +29,9 @@ public interface APIDataProvider {
     Observable<ApiResponse<String>> getArticleText(@Path("id") int id);
 
     @POST("devices/android")
-    Observable<?> postRegisterDevice(@Query("token") String token);
+    Observable<Object> postRegisterDevice(@Query("id") String id);
 
     @POST("devices/filter-android")
-    Observable<?> postSelectedFilters(@Query("token") String token, @Query("category_ids") List<Integer> categories, @Query("publishers_ids") List<Integer> publishers);
+    Observable<Object> postSelectedFilters(@Query("id") String id, @Query("publishers_ids") List<Integer> publishers, @Query("category_ids") List<Integer> categories);
 
 }

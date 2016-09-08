@@ -2,9 +2,10 @@ package com.mozidev.newskeeper.presentation.publishers;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
-import android.widget.Button;
+import android.widget.CompoundButton;
 
 import com.mozidev.newskeeper.Constants;
 import com.mozidev.newskeeper.R;
@@ -13,13 +14,15 @@ import com.mozidev.newskeeper.presentation.articles.ArticlesListActivity;
 import com.mozidev.newskeeper.presentation.common.BaseActivity;
 import com.mozidev.newskeeper.presentation.common.BasePresenter;
 import com.mozidev.newskeeper.presentation.common.Layout;
+import com.mozidev.newskeeper.presentation.injection.DaggerHelper;
 import com.mozidev.newskeeper.presentation.publisher_details.PublisherDetailsActivity;
 
 import java.util.List;
 
 import javax.inject.Inject;
 
-import butterknife.BindView;
+import butterknife.Bind;
+import io.realm.Realm;
 
 @Layout(id = R.layout.activity_publishers_list)
 public class PublishersListActivity extends BaseActivity implements PublishersListView, PublishersListRouter {
@@ -27,15 +30,17 @@ public class PublishersListActivity extends BaseActivity implements PublishersLi
     @Inject
     PublishersPresenter publishersPresenter;
 
-    @BindView(R.id.fab_view_articles)
-    Button viewArticlesFab;
+    @Bind(R.id.fab_view_articles)
+    FloatingActionButton viewArticlesFab;
 
     private PublishersListAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        DaggerHelper.getMainComponent().inject(this);
         initToolbar(getToolbarTitle());
+        toolbar.setNavigationIcon(null);
         viewArticlesFab.setOnClickListener(v -> publishersPresenter.checkAndGo());
     }
 
@@ -66,7 +71,7 @@ public class PublishersListActivity extends BaseActivity implements PublishersLi
     }
 
     @Override
-    public void openPublisher(Publisher publisher) {
+    public void openPublisher(PublisherViewModel publisher) {
         Intent intent = new Intent(this, PublisherDetailsActivity.class);
         intent.putExtra(Constants.EXTRA_PUBLISHER, publisher);
         startActivity(intent);
@@ -75,18 +80,19 @@ public class PublishersListActivity extends BaseActivity implements PublishersLi
     @Override
     public void openArticles() {
         startActivity(new Intent(this, ArticlesListActivity.class));
+        finish();
     }
 
     @Override
-    public void setPublishers(List<Publisher> data) {
+    public void setPublishers(List<PublisherViewModel> data) {
         adapter = new PublishersListAdapter(data);
-        adapter.setOnItemClickListener(v -> publishersPresenter.openPublisher((Publisher) v.getTag()));
+        adapter.setOnClickListener(v -> publishersPresenter.openPublisher((PublisherViewModel) v.getTag()));
         recycler.setAdapter(adapter);
     }
 
     @Override
     public void showNotificationsDialog() {
-        new AlertDialog.Builder(this)
+        new AlertDialog.Builder(this, R.style.DialogStyle)
                 .setMessage(R.string.notifications_question)
                 .setPositiveButton(android.R.string.yes, (dialogInterface, i) -> {
 
@@ -101,13 +107,13 @@ public class PublishersListActivity extends BaseActivity implements PublishersLi
 
     @Override
     public void showCheckDialog() {
-        new AlertDialog.Builder(this)
+        new AlertDialog.Builder(this, R.style.DialogStyle)
                 .setMessage(R.string.dialog_check_message)
                 .setNeutralButton(android.R.string.cancel, ((dialogInterface, i) -> {
                 }))
                 .setPositiveButton(android.R.string.yes, ((dialogInterface, i) -> {
                     publishersPresenter.selectUnselect();
-                    finish();
+                    publishersPresenter.openAricles();
                 }))
                 .create()
                 .show();
@@ -115,13 +121,18 @@ public class PublishersListActivity extends BaseActivity implements PublishersLi
 
     @Override
     public void checkAll(boolean check) {
-        toolbar.getMenu().findItem(R.id.select_unselect).setTitle(check ? R.string.unselect_all : R.string.select_all);
+        changeItemTitle(check);
         adapter.checkAll(check);
     }
 
     @Override
+    public void changeItemTitle(boolean condition) {
+        toolbar.getMenu().findItem(R.id.select_unselect).setTitle(condition ? R.string.unselect_all : R.string.select_all);
+    }
+
+    @Override
     public void showDataDialog() {
-        new AlertDialog.Builder(this)
+        new AlertDialog.Builder(this, R.style.DialogStyle)
                 .setMessage(R.string.data_warning)
                 .setNeutralButton(android.R.string.ok, (dialogInterface, i) -> {
 

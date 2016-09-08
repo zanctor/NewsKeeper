@@ -9,6 +9,7 @@ import com.mozidev.newskeeper.domain.publishers.Publisher;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -48,14 +49,12 @@ public class APIDataProviderImpl {
                 .compose(extractResponse());
     }
 
-    public Observable<?> postRegisterDevice(String token) {
-        return provider.postRegisterDevice(token)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+    public Observable<Object> postRegisterDevice(String id) {
+        return provider.postRegisterDevice(id);
     }
 
-    public Observable<?> postSelectedFilters(String id, List<Integer> categories, List<Integer> publishers) {
-        return provider.postSelectedFilters(id, categories, publishers);
+    public Observable<Object> postSelectedFilters(String id, List<Integer> publishers, List<Integer> categories) {
+        return provider.postSelectedFilters(id, publishers, categories);
     }
 
 }
