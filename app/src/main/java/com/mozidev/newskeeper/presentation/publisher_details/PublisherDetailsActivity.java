@@ -77,7 +77,7 @@ public class PublisherDetailsActivity extends BaseActivity implements PublisherD
 
     @Override
     public void contactPublisher(Intent intent) {
-        Intent.createChooser(intent, getString(R.string.send));
+        startActivity(Intent.createChooser(intent, getString(R.string.send)));
     }
 
     @Override
