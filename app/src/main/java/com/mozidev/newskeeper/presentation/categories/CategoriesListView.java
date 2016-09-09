@@ -11,8 +11,6 @@ public interface CategoriesListView {
 
     void checkAll(boolean check);
 
-    void showCheckDialog();
-
     void changeItemTitle(boolean condition);
 
 }

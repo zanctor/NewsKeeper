@@ -13,6 +13,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import io.realm.Realm;
+import io.realm.Sort;
 import rx.Observable;
 import rx.Scheduler;
 
@@ -34,7 +35,7 @@ public class ArticlesDataProviderImpl implements ArticlesDataProvider {
         List<ArticleViewModel> articles = ArticleViewModel.create(realm.where(Article.class)
                 .equalTo("status", true)
                 .equalTo("is_deleted", false)
-                .findAll());
+                .findAllSorted("publisher_time", Sort.DESCENDING));
 
         System.out.println("FUCK " + "retrieved list size: " + articles.size());
 
@@ -52,23 +53,16 @@ public class ArticlesDataProviderImpl implements ArticlesDataProvider {
 
         System.out.println("FUCK " + "retrieved list size: " + categories.size());
 
-        List<ArticleViewModel> articleViewModels = new ArrayList<>();
-
-        for (ArticleViewModel articleViewModel : articles) {
-            for (Publisher publisher : publishers) {
-                for (Category category : categories) {
-                    if (publisher.getId() == articleViewModel.getPublisherId() && category.getId() == articleViewModel.getCategoryId()) {
-                        articleViewModel.setPublisherName(publisher.getPublisherName());
-                        articleViewModel.setPublisherLogo(publisher.getLogo());
-                        articleViewModels.add(articleViewModel);
-                    }
-                }
+        return Observable.zip(Observable.from(articles), Observable.from(publishers), Observable.from(categories), (articleViewModel, publisher, category) -> {
+            if (articleViewModel.getPublisherId() == publisher.getId() && category == null ? articleViewModel.getCategoryId() == category.getId() : true) {
+                articleViewModel.setPublisherName(publisher.getPublisherName());
+                articleViewModel.setPublisherLogo(publisher.getLogo());
+                return articleViewModel;
             }
-        }
+            return null;
+        }).filter(it -> it != null)
+                .toList();
 
-
-
-        return Observable.just(articleViewModels);
 
     }
 

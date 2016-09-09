@@ -89,17 +89,4 @@ public class CategoriesListActivity extends BaseActivity implements CategoriesLi
         return getString(R.string.categories);
     }
 
-    @Override
-    public void showCheckDialog() {
-        new AlertDialog.Builder(this, R.style.DialogStyle)
-                .setMessage(R.string.dialog_check_message)
-                .setNeutralButton(android.R.string.cancel, ((dialogInterface, i) -> {
-                }))
-                .setPositiveButton(android.R.string.yes, ((dialogInterface, i) -> {
-                    categoriesPresenter.selectUnselect();
-                    finish();
-                }))
-                .create()
-                .show();
-    }
 }

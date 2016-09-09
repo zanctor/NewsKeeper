@@ -85,18 +85,10 @@ public class CategoriesPresenter extends BasePresenter<CategoriesListView, Void>
 
     void checkAndReturn() {
         if (data != null) {
-            if (isAtLeastOneSelected()) {
-                saveData();
-            } else {
-                showCheckDialog();
-            }
+            saveData();
         } else {
             ((CategoriesListActivity) getView()).finish();
         }
-    }
-
-    private void showCheckDialog() {
-        getView().showCheckDialog();
     }
 
     private void saveData() {
